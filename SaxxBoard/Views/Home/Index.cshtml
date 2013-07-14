@@ -1,0 +1,63 @@
+﻿@model SaxxBoard.ViewModels.Home.IndexViewModel
+
+<div class="row-fluid">
+    <div class="span4" id="chart1">
+    </div>
+    <div class="span4" id="chart2">
+    </div>
+    <div class="span4" id="chart3">
+    </div>
+    <div class="span4" id="chart4">
+    </div>
+    <div class="span4" id="chart5">
+    </div>
+    <div class="span4" id="chart6">
+    </div>
+    <div class="span4" id="chart7">
+    </div>
+    <div class="span4" id="chart8">
+    </div>
+    <div class="span4" id="chart9">
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        var _lastUpdate;
+
+        $(function () {
+            var boardHub = $.connection.boardHub;
+
+            boardHub.client.updateBoard = function (arg) {
+                $.each(arg.widgets, function (i, widget) {
+                    $("#chart" + (i + 1)).saxxBoardWidget({
+                        title: widget.Name,
+                        dataPoints: widget.DataPoints
+                    });
+                });
+                _lastUpdate = new Date();
+            };
+
+            // Start the connection
+            $.connection.hub.start().done(function () {
+                setInterval("updateUpdateDate();", 100);
+                boardHub.server.refresh();
+            });
+        });
+
+        function updateUpdateDate() {
+            if (_lastUpdate) {
+                var seconds = Math.floor((new Date().getTime() - _lastUpdate.getTime()) / 1000);
+                if (seconds == 1)
+                    $("#updateDate").html("Refreshed 1 second ago.");
+                if (seconds == 0)
+                    $("#updateDate").html("Refreshed just now.");
+                else
+                    $("#updateDate").html("Refreshed " + seconds + " seconds ago.");
+            }
+        }
+    </script>
+}
+
+
