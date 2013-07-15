@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SaxxBoard.Widgets
 {
@@ -18,22 +17,23 @@ namespace SaxxBoard.Widgets
 
         private void BuildWidgets()
         {
-            AvailableWidgets = new[]
+            AvailableWidgets = new IWidget[]
                 {
-                    new RandomWidget.RandomWidget
+                    new Pop3Widget.Pop3Widget 
                         {
-                            Name = "Randwom Widget I",
-                            Identifier = "RandomWidget1"
+                            Title = "support@epunkt.net e-mails",
+                            InternalIdentifier = "support@epunkt.net"
+                        },
+                        new RssWidget.RssWidget
+                        {
+                            Title = "IssueTracker new items",
+                            InternalIdentifier = "IssueTracker"
                         },
                         new RandomWidget.RandomWidget
                         {
-                            Name = "Random Widget II",
-                            Identifier = "RandomWidget2"
-                        },
-                        new RandomWidget.RandomWidget
-                        {
-                            Name = "Random Widget III",
-                            Identifier = "RandomWidget3"
+                            Title = "Random Widget",
+                            InternalIdentifier = "RandomWidget",
+                            CollectIntervalInSeconds = 10
                         }
                 };
         }

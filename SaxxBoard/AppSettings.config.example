@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!-- the actual AppSettings.config file is not published to the Repository, because it could contain real API keys that shouldn't be published -->
+
+<appSettings>
+  <add key="webpages:Version" value="2.0.0.0" />
+  <add key="webpages:Enabled" value="false" />
+  <add key="PreserveLoginUrl" value="true" />
+  <add key="ClientValidationEnabled" value="true" />
+  <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+</appSettings>

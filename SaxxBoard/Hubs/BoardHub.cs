@@ -28,8 +28,9 @@ namespace SaxxBoard.Hubs
                         widgets = from x in _widgets.AvailableWidgets
                                   select new
                                       {
-                                          Name = x.Name,
-                                          DataPoints = x.GetPresenter().GetData(dbSession, DateTime.Now.AddMinutes(-1000), DateTime.Now).ToList()
+                                          x.Title,
+                                          DataPoints = x.GetPresenter().GetData(dbSession).ToList(),
+                                          x.IsScaledToPercents
                                       },
                         dateTime = DateTime.Now
                     };

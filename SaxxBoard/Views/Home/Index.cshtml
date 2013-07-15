@@ -32,8 +32,9 @@
             boardHub.client.updateBoard = function (arg) {
                 $.each(arg.widgets, function (i, widget) {
                     $("#chart" + (i + 1)).saxxBoardWidget({
-                        title: widget.Name,
-                        dataPoints: widget.DataPoints
+                        title: widget.Title,
+                        dataPoints: widget.DataPoints,
+                        isScaledToPercents: widget.IsScaledToPercents
                     });
                 });
                 _lastUpdate = new Date();

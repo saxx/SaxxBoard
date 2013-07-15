@@ -15,7 +15,7 @@ namespace SaxxBoard.Collector
                     var count = 0;
                     while (!_isStopping)
                     {
-                        if (count >= 1800) //every 3 minutes
+                        if (count >= 10)
                         {
                             collector.Collect();
                             count = 0;

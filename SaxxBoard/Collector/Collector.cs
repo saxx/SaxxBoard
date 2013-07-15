@@ -1,4 +1,5 @@
-﻿using Raven.Client;
+﻿using System.Collections.Generic;
+using Raven.Client;
 using SaxxBoard.Widgets;
 
 namespace SaxxBoard.Collector
@@ -7,6 +8,8 @@ namespace SaxxBoard.Collector
     {
         private readonly IDocumentStore _db;
         private readonly WidgetCollection _widgets;
+
+        private Dictionary<string, int> _remainingInterval = new Dictionary<string, int>();
 
         public Collector(IDocumentStore db, WidgetCollection widgets)
         {
@@ -20,8 +23,16 @@ namespace SaxxBoard.Collector
             {
                 foreach (var widget in _widgets.AvailableWidgets)
                 {
-                    var widgetCollector = widget.GetCollector();
-                    widgetCollector.Collect(dbSession);
+                    if (!_remainingInterval.ContainsKey(widget.InternalIdentifier))
+                        _remainingInterval[widget.InternalIdentifier] = 0;
+                    _remainingInterval[widget.InternalIdentifier] -= 1;
+
+                    if (_remainingInterval[widget.InternalIdentifier] <= 0)
+                    {
+                        var widgetCollector = widget.GetCollector();
+                        widgetCollector.Collect(dbSession);
+                        _remainingInterval[widget.InternalIdentifier] = widget.CollectIntervalInSeconds;
+                    }
                 }
             }
         }

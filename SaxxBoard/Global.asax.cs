@@ -1,15 +1,14 @@
-﻿using System;
+﻿using MailSendbox;
+using Microsoft.AspNet.SignalR;
+using Ninject;
+using SaxxBoard.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using MailSendbox;
-using Microsoft.AspNet.SignalR;
-using Ninject;
-using Ninject.Web.Mvc;
-using SaxxBoard.App_Start;
 
 namespace SaxxBoard
 {

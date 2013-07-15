@@ -3,8 +3,13 @@ namespace SaxxBoard.Widgets
 {
     public interface IWidget
     {
-        string Name { get; set; }
-        string Identifier { get; set; }
+        string Title { get; set; }
+        string InternalIdentifier { get; set; }
+        int NumberOfDataPoints { get; set; }
+        int CollectIntervalInSeconds { get; set; }
+
+        bool IsScaledToPercents { get; }
+
         ICollector GetCollector();
         IPresenter GetPresenter();
         event CollectedDelegate OnCollected;

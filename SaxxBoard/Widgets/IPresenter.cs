@@ -6,7 +6,7 @@ namespace SaxxBoard.Widgets
 {
     public interface IPresenter
     {
-        IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession, DateTime startDate, DateTime endDate);
-        IWidget Widget { get; }
+        IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession);
+        IWidget Widget { get; set; }
     }
 }

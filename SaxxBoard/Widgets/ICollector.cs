@@ -7,6 +7,6 @@ namespace SaxxBoard.Widgets
     {
         IEnumerable<ICollectorDataPoint> Collect(IDocumentSession dbSession);
         event CollectedDelegate OnCollected;
-        IWidget Widget { get; }
+        IWidget Widget { get; set; }
     }
 }

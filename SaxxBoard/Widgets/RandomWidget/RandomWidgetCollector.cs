@@ -1,35 +1,17 @@
-﻿using Raven.Client;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace SaxxBoard.Widgets.RandomWidget
 {
-    public class RandomWidgetCollector : ICollector
+    public class RandomWidgetCollector : SimpleCollector<SimpleDataPoint>
     {
-        public event CollectedDelegate OnCollected;
-
-        public IWidget Widget { get; set; }
-
-        public IEnumerable<ICollectorDataPoint> Collect(IDocumentSession dbSession)
+        public override SimpleDataPoint Collect()
         {
-            var newDataPoints = new[]
+            return new SimpleDataPoint
                 {
-                    new SimpleDataPoint
-                        {
-                            Date = DateTime.Now,
-                            Value = new Random().Next(1, 100),
-                            WidgetIdentifier = Widget.Identifier
-                        }
+                    Date = DateTime.Now,
+                    Value = new Random().Next(1, 100),
+                    WidgetIdentifier = Widget.InternalIdentifier
                 };
-
-            foreach (var d in newDataPoints)
-                dbSession.Store(d);
-            dbSession.SaveChanges();
-
-            if (OnCollected != null)
-                OnCollected();
-
-            return newDataPoints;
         }
     }
 }

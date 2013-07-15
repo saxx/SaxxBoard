@@ -44,6 +44,9 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="ePunkt.Utilities">
+      <HintPath>..\packages\ePunkt.Utilities.0.0.5-alpha\lib\net40-Client\ePunkt.Utilities.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.1.1.2\lib\net40\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
@@ -72,6 +75,9 @@
     </Reference>
     <Reference Include="Ninject.Web.Mvc">
       <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenPop">
+      <HintPath>..\packages\OpenPop.NET.2.0.4.369\lib\net20\OpenPop.dll</HintPath>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -160,11 +166,16 @@
     <Compile Include="Widgets\ICollectorDataPoint.cs" />
     <Compile Include="Widgets\IPresenter.cs" />
     <Compile Include="Widgets\IWidget.cs" />
+    <Compile Include="Widgets\Pop3Widget\Pop3Widget.cs" />
+    <Compile Include="Widgets\Pop3Widget\Pop3WidgetCollector.cs" />
+    <Compile Include="Widgets\RssWidget\RssWidgetCollector.cs" />
+    <Compile Include="Widgets\RssWidget\RssWidget.cs" />
+    <Compile Include="Widgets\SimpleCollector.cs" />
+    <Compile Include="Widgets\SimplePresenter.cs" />
     <Compile Include="Widgets\RandomWidget\RandomWidget.cs" />
     <Compile Include="Widgets\RandomWidget\RandomWidgetCollector.cs" />
-    <Compile Include="Widgets\RandomWidget\RandomWidgetPresenter.cs" />
     <Compile Include="Widgets\SimpleDataPoint.cs" />
-    <Compile Include="Widgets\WidgetBase.cs" />
+    <Compile Include="Widgets\SimpleWidget.cs" />
     <Compile Include="Widgets\WidgetCollection.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -220,9 +231,6 @@
     <Content Include="Scripts\jquery.signalR-1.1.2.min.js" />
     <Content Include="Scripts\SaxxBoard\jquery.saxxBoardWidget.js" />
     <Content Include="Web.config" />
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

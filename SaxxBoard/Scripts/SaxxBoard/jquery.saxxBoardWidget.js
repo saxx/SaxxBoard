@@ -4,7 +4,8 @@
             title: "Chart",
             dataPoints: [],
             width: "100%",
-            height: "250px"
+            height: "250px",
+            isScaledToPercents: true
         }, options);
 
         var container = $(this);
@@ -32,8 +33,10 @@
             },
             yaxis: {
                 min: 0,
-                max: 100,
-                show: false
+                minTickSize: 1,
+                tickDecimals: 0,
+                max: (options.isScaledToPercents ? 100 : null),
+                show: (options.isScaledToPercents ? false : true)
             },
             xaxis: {
                 mode: "time",
