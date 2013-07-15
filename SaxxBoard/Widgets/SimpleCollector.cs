@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Raven.Client;
 using System.Collections.Generic;
 using System.Linq;
-using Raven.Client;
 
 namespace SaxxBoard.Widgets
 {
@@ -20,7 +19,10 @@ namespace SaxxBoard.Widgets
             DeleteOldDataPoints(dbSession);
 
             foreach (var d in newDataPoints)
+            {
+                d.Date = d.Date.ToUniversalTime();
                 dbSession.Store(d);
+            }
             dbSession.SaveChanges();
 
             if (OnCollected != null)

@@ -1,4 +1,5 @@
-﻿using Raven.Client;
+﻿using System;
+using Raven.Client;
 using Raven.Client.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,15 @@ namespace SaxxBoard.Widgets
     {
         public IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession)
         {
-            var query = dbSession.Query<SimpleDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderByDescending(x => x.Date).Take(Widget.NumberOfDataPoints);
+            var query = dbSession.Query<SimpleDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderByDescending(x => x.Date).Take(Widget.NumberOfDataPoints).ToList();
             return from x in query.OrderBy(x => x.Date)
                    orderby x.Date
-                   select x;
+                   select new SimpleDataPoint
+                       {
+                           Value = x.Value,
+                           WidgetIdentifier = x.WidgetIdentifier,
+                           Date = TimeZoneInfo.ConvertTimeFromUtc(x.Date, TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time"))
+                       };
         }
 
         public IWidget Widget { get; set; }
