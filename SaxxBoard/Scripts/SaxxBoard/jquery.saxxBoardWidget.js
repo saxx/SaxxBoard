@@ -40,7 +40,8 @@
             },
             xaxis: {
                 mode: "time",
-                minTickSize: [1, "minute"],
+                timezone: "browser",
+                minTickSize: [1, "minute"]
             }
         };
         chartDiv.plot([plotSeries], plotOptions);
