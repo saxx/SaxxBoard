@@ -1,4 +1,6 @@
-﻿using ePunkt.Utilities;
+﻿using System.Web;
+using Elmah;
+using ePunkt.Utilities;
 using OpenPop.Pop3;
 using System;
 
@@ -34,9 +36,10 @@ namespace SaxxBoard.Widgets.Pop3Widget
                     pop3Client.Disconnect();
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 newDataPoint.Value = -1;
+                ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 
             return newDataPoint;

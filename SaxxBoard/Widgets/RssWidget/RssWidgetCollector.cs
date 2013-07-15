@@ -1,4 +1,6 @@
-﻿using ePunkt.Utilities;
+﻿using System.Web;
+using Elmah;
+using ePunkt.Utilities;
 using System;
 using System.Linq;
 using System.Xml.Linq;
@@ -21,9 +23,10 @@ namespace SaxxBoard.Widgets.RssWidget
                 var xml = XDocument.Load(url);
                 newDataPoint.Value = xml.Elements().First().Elements().First().Elements().Count() - 4;
             }
-            catch
+            catch (Exception ex)
             {
                 newDataPoint.Value = -1;
+                ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 
             return newDataPoint;
