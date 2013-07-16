@@ -9,7 +9,7 @@ namespace SaxxBoard.Widgets.RandomWidget
             return new SimpleDataPoint
                 {
                     Date = DateTime.Now,
-                    Value = new Random().Next(1, 100),
+                    Value = new Random().Next(0, 100),
                     WidgetIdentifier = Widget.InternalIdentifier
                 };
         }

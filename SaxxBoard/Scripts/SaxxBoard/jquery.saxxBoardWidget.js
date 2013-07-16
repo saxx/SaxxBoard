@@ -24,12 +24,17 @@
             plotSeries.data.push([date.getTime(), dataPoint.Value]);
         });
 
+        var lastDataPointWasError = false;
+        var lastDataPoint = options.dataPoints[options.dataPoints.length - 1];
+        if (lastDataPoint && lastDataPoint.Value < 0)
+            lastDataPointWasError = true;
+
         var plotOptions = {
             series: {
                 lines: { show: true }
             },
             grid: {
-                backgroundColor: { colors: ["#fff", "#eee"] }
+                backgroundColor: { colors: ["#fff", lastDataPointWasError ? "#f00" : "#eee"] }
             },
             yaxis: {
                 min: 0,
