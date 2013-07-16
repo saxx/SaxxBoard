@@ -36,6 +36,7 @@ namespace SaxxBoard
                         var widget = (IWidget) Activator.CreateInstance(type);
                         widget.InternalIdentifier = Settings.Get("Widget" + count + "::InternalIdentifier", "");
                         widget.Title = Settings.Get("Widget" + count + "::Title", "");
+                        widgets.Add(widget);
                     }
                 }
                 else
