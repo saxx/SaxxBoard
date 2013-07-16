@@ -5,6 +5,7 @@ namespace SaxxBoard.Widgets
     public interface IPresenterDataPoint
     {
         DateTime Date { get; set; }
-        int Value { get; set; }
+        double? RawValue { get; }
+        string FormattedValue { get; }
     }
 }

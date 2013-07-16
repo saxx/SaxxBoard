@@ -1,6 +1,6 @@
 ﻿namespace SaxxBoard.Widgets.NewRelicWidget
 {
-    public class NewRelicWidget : SimpleWidget<NewRelicWidgetCollector, SimplePresenter, NewRelicConfiguration>
+    public class NewRelicWidget : SimpleWidget<NewRelicWidgetCollector, NewRelicPresenter, NewRelicConfiguration>
     {
     }
 }

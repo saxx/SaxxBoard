@@ -6,11 +6,11 @@ using System.Xml.Linq;
 
 namespace SaxxBoard.Widgets.RssWidget
 {
-    public class RssWidgetCollector : SimpleCollector<SimpleDataPoint>
+    public class RssWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleDataPoint Collect()
+        public override SimpleCollectorDataPoint Collect()
         {
-            var newDataPoint = new SimpleDataPoint
+            var newDataPoint = new SimpleCollectorDataPoint
                 {
                     Date = DateTime.Now,
                     WidgetIdentifier = Widget.InternalIdentifier
@@ -26,7 +26,6 @@ namespace SaxxBoard.Widgets.RssWidget
             }
             catch (Exception ex)
             {
-                newDataPoint.Value = -1;
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 

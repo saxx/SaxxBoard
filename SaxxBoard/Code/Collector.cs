@@ -18,6 +18,8 @@ namespace SaxxBoard
 
         public void Collect()
         {
+            var hasCollected = false;
+            
             using (var dbSession = _db.OpenSession())
             {
                 foreach (var widget in _widgets.CurrentWidgets)
@@ -31,9 +33,13 @@ namespace SaxxBoard
                         var widgetCollector = widget.GetCollector();
                         widgetCollector.Collect(dbSession);
                         _remainingInterval[widget.InternalIdentifier] = widget.GetConfiguration().RefreshIntervalInSeconds;
+                        hasCollected = true;
                     }
                 }
             }
+
+            if (hasCollected)
+                _widgets.OnCollectedCallback.Invoke();
         }
     }
 }

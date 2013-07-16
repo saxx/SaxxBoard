@@ -38,7 +38,8 @@
                     $("#chart" + (i + 1)).saxxBoardWidget({
                         title: widget.Title,
                         dataPoints: widget.DataPoints,
-                        isScaledToPercents: widget.IsScaledToPercents
+                        isScaledToPercents: widget.IsScaledToPercents,
+                        trend: widget.Trend
                     });
                 });
                 _lastUpdate = new Date();

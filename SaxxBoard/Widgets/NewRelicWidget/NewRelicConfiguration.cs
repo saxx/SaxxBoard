@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ePunkt.Utilities;
 
@@ -29,6 +30,12 @@ namespace SaxxBoard.Widgets.NewRelicWidget
         public string Field
         {
             get { return GetSetting("Field", "average_value"); }
+        }
+
+        public override bool IsScaledToPercents
+        {
+            get { return Metrics.Any(x => x.EndsWith("percent", StringComparison.InvariantCultureIgnoreCase)); }
+            set { throw new NotSupportedException("The NewRelic widget automatically determines of the value is scaled to percents - it's not possible to set the value manually."); }
         }
     }
 }

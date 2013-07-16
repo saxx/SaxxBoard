@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SaxxBoard.Widgets
 {
-    public abstract class SimpleCollector<TDataPoint> : ICollector where TDataPoint : SimpleDataPoint
+    public abstract class SimpleCollector<TDataPoint> : ICollector where TDataPoint : SimpleCollectorDataPoint
     {
         public abstract TDataPoint Collect();
 
@@ -25,8 +25,6 @@ namespace SaxxBoard.Widgets
             }
             dbSession.SaveChanges();
 
-            if (OnCollected != null)
-                OnCollected();
             return newDataPoints;
         }
 
@@ -49,7 +47,6 @@ namespace SaxxBoard.Widgets
             }
         }
 
-        public event CollectedDelegate OnCollected;
         public IWidget Widget { get; set; }
     }
 }

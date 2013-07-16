@@ -3,17 +3,41 @@
         options = $.extend({
             title: "Chart",
             dataPoints: [],
-            width: "100%",
             height: "250px",
-            isScaledToPercents: true
+            isScaledToPercents: false,
+            trend: 0
         }, options);
+
+        var lastDataPointWasError = false;
+        var lastDataPoint = options.dataPoints[options.dataPoints.length - 1];
+        if (lastDataPoint && lastDataPoint.RawValue == null)
+            lastDataPointWasError = true;
 
         var container = $(this);
         container.html("");
 
-        var titleDiv = $("<h4 />").html(options.title);
-        var chartDiv = $("<div />").css("height", options.height).css("width", options.width);
+        var titleDiv = $("<h4 />").css("margin-bottom", "0");
+        var valueDiv = $("<div />")
+            .css("float", "right")
+            .html(lastDataPoint.FormattedValue);
+
+        var trendDegrees = (options.trend * 90);
+        var trendDiv = $("<div />")
+            .css("transform", "rotate(" + trendDegrees + "deg)")
+            .css("color", (trendDegrees < 0 ? "#B76474" : (trendDegrees == 0 ? "#eeeeee" : "#9EB764")))
+            .css("padding-left", "10px")
+            .css("font-size", "800%")
+            .css("float", "right")
+            .css("z-index", "1")
+            .css("font-weight", "bold")
+            .html("&#8674;");
+        titleDiv.append(trendDiv);
+        titleDiv.append(valueDiv);
+        titleDiv.append(options.title);
         container.append(titleDiv);
+
+
+        var chartDiv = $("<div />").css("height", options.height).css("width", "100%");
         container.append(chartDiv);
 
         var plotSeries = {
@@ -21,13 +45,8 @@
         };
         $.each(options.dataPoints, function (i, dataPoint) {
             var date = new Date(dataPoint.Date);
-            plotSeries.data.push([date.getTime(), dataPoint.Value]);
+            plotSeries.data.push([date.getTime(), dataPoint.RawValue]);
         });
-
-        var lastDataPointWasError = false;
-        var lastDataPoint = options.dataPoints[options.dataPoints.length - 1];
-        if (lastDataPoint && lastDataPoint.Value < 0)
-            lastDataPointWasError = true;
 
         var plotOptions = {
             series: {

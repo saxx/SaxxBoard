@@ -9,9 +9,5 @@ namespace SaxxBoard.Widgets
         ICollector GetCollector();
         IPresenter GetPresenter();
         IConfiguration GetConfiguration();
-
-        event CollectedDelegate OnCollected;
     }
-
-    public delegate void CollectedDelegate();
 }

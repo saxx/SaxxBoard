@@ -13,7 +13,7 @@ namespace SaxxBoard.Widgets
 
         public int MaxDataPointsInChart
         {
-            get { return GetSetting("MaxDataPointsInChart", 100); }
+            get { return GetSetting("MaxDataPointsInChart", 200); }
         }
 
         public int MaxDataPointsToStore
@@ -21,7 +21,7 @@ namespace SaxxBoard.Widgets
             get { return GetSetting("MaxDataPointsToStore", 500); }
         }
 
-        public bool IsScaledToPercents { get; set; }
+        public virtual bool IsScaledToPercents { get; set; }
 
         #region Get setting helpers
         protected string GetSetting(string key, string defaultValue)

@@ -10,12 +10,6 @@ namespace SaxxBoard
         public WidgetCollection()
         {
             BuildWidgets();
-            foreach (var widget in CurrentWidgets)
-                widget.OnCollected += () =>
-                    {
-                        if (OnCollectedCallback != null)
-                            OnCollectedCallback();
-                    };
         }
 
         private void BuildWidgets()
@@ -49,4 +43,6 @@ namespace SaxxBoard
         public IEnumerable<IWidget> CurrentWidgets { get; private set; }
         public CollectedDelegate OnCollectedCallback { get; set; }
     }
+
+    public delegate void CollectedDelegate();
 }

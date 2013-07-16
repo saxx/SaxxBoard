@@ -2,11 +2,11 @@
 
 namespace SaxxBoard.Widgets.RandomWidget
 {
-    public class RandomWidgetCollector : SimpleCollector<SimpleDataPoint>
+    public class RandomWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleDataPoint Collect()
+        public override SimpleCollectorDataPoint Collect()
         {
-            return new SimpleDataPoint
+            return new SimpleCollectorDataPoint
                 {
                     Date = DateTime.Now,
                     Value = new Random().Next(0, 100),

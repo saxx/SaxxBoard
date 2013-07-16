@@ -7,11 +7,11 @@ using System;
 
 namespace SaxxBoard.Widgets.Pop3Widget
 {
-    public class Pop3WidgetCollector : SimpleCollector<SimpleDataPoint>
+    public class Pop3WidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleDataPoint Collect()
+        public override SimpleCollectorDataPoint Collect()
         {
-            var newDataPoint = new SimpleDataPoint
+            var newDataPoint = new SimpleCollectorDataPoint
                 {
                     Date = DateTime.Now,
                     WidgetIdentifier = Widget.InternalIdentifier
@@ -40,7 +40,6 @@ namespace SaxxBoard.Widgets.Pop3Widget
             }
             catch (Exception ex)
             {
-                newDataPoint.Value = -1;
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to fetch POP3. Host: " + host + ", Username: " + username + ", Password: " + password + ".", ex)));
             }
 

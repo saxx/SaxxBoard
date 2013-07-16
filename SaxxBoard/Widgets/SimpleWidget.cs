@@ -12,15 +12,10 @@
 
         public ICollector GetCollector()
         {
-            if (_collector == null)
-            {
-                _collector = new TCollector
+            return _collector ?? (_collector = new TCollector
                 {
                     Widget = this
-                };
-                _collector.OnCollected += FireOnCollectedEvent;
-            }
-            return _collector;
+                });
         }
 
         public IPresenter GetPresenter()
@@ -41,12 +36,5 @@
 
         public string Title { get; set; }
         public string InternalIdentifier { get; set; }
-
-        protected void FireOnCollectedEvent()
-        {
-            if (OnCollected != null)
-                OnCollected();
-        }
-        public event CollectedDelegate OnCollected;
     }
 }

@@ -7,15 +7,14 @@ using TrelloNet;
 
 namespace SaxxBoard.Widgets.TrelloWidget
 {
-    public class TrelloWidgetCollector : SimpleCollector<SimpleDataPoint>
+    public class TrelloWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleDataPoint Collect()
+        public override SimpleCollectorDataPoint Collect()
         {
-            var newDataPoint = new SimpleDataPoint
+            var newDataPoint = new SimpleCollectorDataPoint
                 {
                     Date = DateTime.Now,
                     WidgetIdentifier = Widget.InternalIdentifier,
-                    Value = 0
                 };
 
             try
@@ -29,18 +28,19 @@ namespace SaxxBoard.Widgets.TrelloWidget
                 if (board == null)
                     throw new System.ApplicationException("Board '" + config.Board + "' not found.");
 
+                var value = 0;
                 if (config.Lists.Any())
                 {
                     foreach (var list in trello.Lists.ForBoard(board))
                         if (config.Lists.Any(x => x.Is(list.Name)))
-                            newDataPoint.Value += trello.Cards.ForList(list).Count();
+                            value += trello.Cards.ForList(list).Count();
                 }
                 else
-                    newDataPoint.Value = trello.Cards.ForBoard(board).Count();
+                    value = trello.Cards.ForBoard(board).Count();
+                newDataPoint.Value = value;
             }
             catch (Exception ex)
             {
-                newDataPoint.Value = -1;
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 
