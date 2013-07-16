@@ -155,8 +155,8 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
-    <Compile Include="Collector\Collector.cs" />
-    <Compile Include="Collector\CollectorThread.cs" />
+    <Compile Include="Code\Collector.cs" />
+    <Compile Include="Code\CollectorThread.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -169,17 +169,21 @@
     <Compile Include="Widgets\ICollectorDataPoint.cs" />
     <Compile Include="Widgets\IPresenter.cs" />
     <Compile Include="Widgets\IWidget.cs" />
+    <Compile Include="Widgets\IConfiguration.cs" />
     <Compile Include="Widgets\Pop3Widget\Pop3Widget.cs" />
     <Compile Include="Widgets\Pop3Widget\Pop3WidgetCollector.cs" />
+    <Compile Include="Widgets\Pop3Widget\Pop3Configuration.cs" />
+    <Compile Include="Widgets\RssWidget\RssConfiguration.cs" />
     <Compile Include="Widgets\RssWidget\RssWidgetCollector.cs" />
     <Compile Include="Widgets\RssWidget\RssWidget.cs" />
     <Compile Include="Widgets\SimpleCollector.cs" />
+    <Compile Include="Widgets\SimpleConfiguration.cs" />
     <Compile Include="Widgets\SimplePresenter.cs" />
     <Compile Include="Widgets\RandomWidget\RandomWidget.cs" />
     <Compile Include="Widgets\RandomWidget\RandomWidgetCollector.cs" />
     <Compile Include="Widgets\SimpleDataPoint.cs" />
     <Compile Include="Widgets\SimpleWidget.cs" />
-    <Compile Include="Widgets\WidgetCollection.cs" />
+    <Compile Include="Code\WidgetCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />

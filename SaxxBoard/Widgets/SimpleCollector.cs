@@ -35,7 +35,7 @@ namespace SaxxBoard.Widgets
             var query = dbSession.Query<TDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderBy(x => x.Date);
 
             var count = query.Count();
-            var difference = count - Widget.NumberOfDataPoints;
+            var difference = count - Widget.GetConfiguration().MaxDataPointsToStore;
 
             //delete at most 10 datapoints at once
             if (difference > 10)

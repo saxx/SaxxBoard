@@ -1,14 +1,9 @@
-using System.Collections.Generic;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.SystemWeb.Infrastructure;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
 using System.Reflection;
-using SaxxBoard.Collector;
-using SaxxBoard.Widgets;
-using SaxxBoard.Widgets.RandomWidget;
-
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Stop")]
 
@@ -61,9 +56,9 @@ namespace SaxxBoard.App_Start
                     return store;
                 }).InSingletonScope();
 
-            kernel.Bind<Collector.Collector>().ToMethod(x =>
+            kernel.Bind<Collector>().ToMethod(x =>
                 {
-                    var collector = new Collector.Collector(kernel.Get<IDocumentStore>(), kernel.Get<WidgetCollection>());
+                    var collector = new Collector(kernel.Get<IDocumentStore>(), kernel.Get<WidgetCollection>());
                     return collector;
                 });
 
@@ -74,7 +69,7 @@ namespace SaxxBoard.App_Start
         private static void Boot(IKernel kernel)
         {
             var collectorThread = kernel.Get<CollectorThread>();
-            var collector = kernel.Get<Collector.Collector>();
+            var collector = kernel.Get<Collector>();
 
             collectorThread.Start(collector);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace SaxxBoard.Collector
+namespace SaxxBoard
 {
     public class CollectorThread : IDisposable
     {

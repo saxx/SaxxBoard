@@ -17,11 +17,12 @@ namespace SaxxBoard.Widgets.Pop3Widget
                     WidgetIdentifier = Widget.InternalIdentifier
                 };
 
-            var host = Settings.Get("Pop3Widget::" + Widget.InternalIdentifier + "::Host", "");
-            var port = Settings.Get("Pop3Widget::" + Widget.InternalIdentifier + "::Port", 110);
-            var useSsl = Settings.Get("Pop3Widget::" + Widget.InternalIdentifier + "::UseSsl", false);
-            var username = Settings.Get("Pop3Widget::" + Widget.InternalIdentifier + "::Username", "");
-            var password = Settings.Get("Pop3Widget::" + Widget.InternalIdentifier + "::Password", "");
+            var config = (Pop3Configuration)Widget.GetConfiguration();
+            var host = config.Host;
+            var port = config.Port;
+            var useSsl = config.UseSsl;
+            var username = config.Username;
+            var password = config.Password;
 
             try
             {

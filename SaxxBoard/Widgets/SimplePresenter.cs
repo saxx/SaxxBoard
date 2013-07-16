@@ -9,7 +9,7 @@ namespace SaxxBoard.Widgets
     {
         public IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession)
         {
-            var query = dbSession.Query<SimpleDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderByDescending(x => x.Date).Take(Widget.NumberOfDataPoints).ToList();
+            var query = dbSession.Query<SimpleDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderByDescending(x => x.Date).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList();
             return from x in query.OrderBy(x => x.Date)
                    orderby x.Date
                    select x;

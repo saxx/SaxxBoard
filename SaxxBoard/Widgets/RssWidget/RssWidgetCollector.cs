@@ -1,8 +1,7 @@
-﻿using System.Web;
-using Elmah;
-using ePunkt.Utilities;
+﻿using Elmah;
 using System;
 using System.Linq;
+using System.Web;
 using System.Xml.Linq;
 
 namespace SaxxBoard.Widgets.RssWidget
@@ -19,7 +18,9 @@ namespace SaxxBoard.Widgets.RssWidget
 
             try
             {
-                var url = Settings.Get("RssWidget::" + Widget.InternalIdentifier + "::Url", "");
+                var config = (RssConfiguration)Widget.GetConfiguration();
+                var url = config.Url;
+
                 var xml = XDocument.Load(url);
                 newDataPoint.Value = xml.Elements().First().Elements().First().Elements().Count() - 4;
             }

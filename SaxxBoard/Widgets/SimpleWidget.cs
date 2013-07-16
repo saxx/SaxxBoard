@@ -1,18 +1,14 @@
 ﻿namespace SaxxBoard.Widgets
 {
-    public class SimpleWidget<TCollector, TPresenter> : IWidget
+    public class SimpleWidget<TCollector, TPresenter, TConfiguration> : IWidget
         where TCollector : class, ICollector, new()
         where TPresenter : class, IPresenter, new()
+        where TConfiguration : class, IConfiguration, new()
     {
 
         private TCollector _collector;
         private TPresenter _presenter;
-
-        public SimpleWidget()
-        {
-            CollectIntervalInSeconds = 60;
-            NumberOfDataPoints = 128;
-        }
+        private TConfiguration _configuration;
 
         public ICollector GetCollector()
         {
@@ -35,12 +31,16 @@
             });
         }
 
+        public IConfiguration GetConfiguration()
+        {
+            return _configuration ?? (_configuration = new TConfiguration
+            {
+                Widget = this
+            });
+        }
+
         public string Title { get; set; }
         public string InternalIdentifier { get; set; }
-        public int NumberOfDataPoints { get; set; }
-        public int CollectIntervalInSeconds { get; set; }
-
-        public virtual bool IsScaledToPercents { get { return false; } }
 
         protected void FireOnCollectedEvent()
         {

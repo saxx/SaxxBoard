@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Raven.Client;
-using SaxxBoard.Widgets;
+﻿using Raven.Client;
+using System.Collections.Generic;
 
-namespace SaxxBoard.Collector
+namespace SaxxBoard
 {
     public class Collector
     {
@@ -21,7 +20,7 @@ namespace SaxxBoard.Collector
         {
             using (var dbSession = _db.OpenSession())
             {
-                foreach (var widget in _widgets.AvailableWidgets)
+                foreach (var widget in _widgets.CurrentWidgets)
                 {
                     if (!_remainingInterval.ContainsKey(widget.InternalIdentifier))
                         _remainingInterval[widget.InternalIdentifier] = 0;
@@ -31,7 +30,7 @@ namespace SaxxBoard.Collector
                     {
                         var widgetCollector = widget.GetCollector();
                         widgetCollector.Collect(dbSession);
-                        _remainingInterval[widget.InternalIdentifier] = widget.CollectIntervalInSeconds;
+                        _remainingInterval[widget.InternalIdentifier] = widget.GetConfiguration().RefreshIntervalInSeconds;
                     }
                 }
             }

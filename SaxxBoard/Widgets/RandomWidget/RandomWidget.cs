@@ -1,7 +1,10 @@
 ﻿namespace SaxxBoard.Widgets.RandomWidget
 {
-    public class RandomWidget : SimpleWidget<RandomWidgetCollector, SimplePresenter>
+    public class RandomWidget : SimpleWidget<RandomWidgetCollector, SimplePresenter, SimpleConfiguration>
     {
-        public override bool IsScaledToPercents { get { return true; } }
+        public RandomWidget()
+        {
+            ((SimpleConfiguration)GetConfiguration()).IsScaledToPercents = true;
+        }
     }
 }

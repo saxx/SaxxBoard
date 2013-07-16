@@ -5,13 +5,11 @@ namespace SaxxBoard.Widgets
     {
         string Title { get; set; }
         string InternalIdentifier { get; set; }
-        int NumberOfDataPoints { get; set; }
-        int CollectIntervalInSeconds { get; set; }
-
-        bool IsScaledToPercents { get; }
 
         ICollector GetCollector();
         IPresenter GetPresenter();
+        IConfiguration GetConfiguration();
+
         event CollectedDelegate OnCollected;
     }
 

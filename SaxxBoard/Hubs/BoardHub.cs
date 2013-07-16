@@ -25,12 +25,12 @@ namespace SaxxBoard.Hubs
             {
                 var result = new
                     {
-                        widgets = from x in _widgets.AvailableWidgets
+                        widgets = from x in _widgets.CurrentWidgets
                                   select new
                                       {
                                           x.Title,
                                           DataPoints = x.GetPresenter().GetData(dbSession).ToList(),
-                                          x.IsScaledToPercents
+                                          x.GetConfiguration().IsScaledToPercents
                                       },
                         dateTime = DateTime.Now
                     };
