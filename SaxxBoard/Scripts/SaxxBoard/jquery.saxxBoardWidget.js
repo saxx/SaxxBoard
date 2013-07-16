@@ -11,7 +11,7 @@
         var container = $(this);
         container.html("");
 
-        var titleDiv = $("<h3 />").html(options.title);
+        var titleDiv = $("<h4 />").html(options.title);
         var chartDiv = $("<div />").css("height", options.height).css("width", options.width);
         container.append(titleDiv);
         container.append(chartDiv);
