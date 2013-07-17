@@ -1,4 +1,6 @@
-﻿using ePunkt.Utilities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ePunkt.Utilities;
 
 namespace SaxxBoard.Widgets
 {
@@ -18,10 +20,26 @@ namespace SaxxBoard.Widgets
 
         public int MaxDataPointsToStore
         {
-            get { return GetSetting("MaxDataPointsToStore", 500); }
+            get { return GetSetting("MaxDataPointsToStore", 5000); }
         }
 
-        public virtual bool IsScaledToPercents { get; set; }
+        public IEnumerable<string> SeriesLabels
+        {
+            get
+            {
+                var setting = GetSetting("SeriesLabels", "");
+                if (setting.HasValue())
+                {
+                    return setting.Split('|').Select(x => x.Trim());
+                }
+                return new string[0];
+            }
+        }
+
+        public virtual double? MinTickSizeOnChart { get { return null; } }
+        public virtual double? MaxValueOnChart { get { return null; } }
+        public virtual bool HigherValueIsBetter { get { return false; } }
+        public virtual bool SumInsteadOfAverage { get { return false; } }
 
         #region Get setting helpers
         protected string GetSetting(string key, string defaultValue)
@@ -39,5 +57,6 @@ namespace SaxxBoard.Widgets
             return Settings.Get(Widget.InternalIdentifier + "::" + key, defaultValue);
         }
         #endregion
+
     }
 }

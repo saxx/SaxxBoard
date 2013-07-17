@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace SaxxBoard.Widgets
 {
     public interface IConfiguration
@@ -7,7 +9,13 @@ namespace SaxxBoard.Widgets
         int MaxDataPointsInChart { get; }
         int MaxDataPointsToStore { get; }
 
-        bool IsScaledToPercents { get; }
+        double? MinTickSizeOnChart { get; }
+        double? MaxValueOnChart { get; }
+
+        bool HigherValueIsBetter { get; }
+        bool SumInsteadOfAverage { get; }
+
+        IEnumerable<string> SeriesLabels { get; }
 
         IWidget Widget { get; set; }
     }

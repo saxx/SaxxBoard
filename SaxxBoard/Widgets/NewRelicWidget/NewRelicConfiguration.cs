@@ -24,7 +24,7 @@ namespace SaxxBoard.Widgets.NewRelicWidget
 
         public IEnumerable<string> Agents
         {
-            get { return GetSetting("Agents", "").Split(';').Select(x => x.Trim()).Where(x => x.HasValue()); }
+            get { return GetSetting("Agents", "").Split('|').Select(x => x.Trim()); }
         }
 
         public string Field
@@ -32,10 +32,53 @@ namespace SaxxBoard.Widgets.NewRelicWidget
             get { return GetSetting("Field", "average_value"); }
         }
 
-        public override bool IsScaledToPercents
+
+        public override double? MaxValueOnChart
+        {
+            get
+            {
+                if (ValueIsPercent)
+                    return 100;
+                if (ValueIsApdex)
+                    return 1.4;
+                return null;
+            }
+         }
+
+        public override bool HigherValueIsBetter
+        {
+            get
+            {
+                return ValueIsApdex || Field.Is("requests_per_minute");
+            }
+        }
+
+        public override bool SumInsteadOfAverage
+        {
+            get
+            {
+                return ValueIsBytes || Field.Is("requests_per_minute");
+            }
+        }
+
+        public bool ValueIsPercent
         {
             get { return Metrics.Any(x => x.EndsWith("percent", StringComparison.InvariantCultureIgnoreCase)); }
-            set { throw new NotSupportedException("The NewRelic widget automatically determines of the value is scaled to percents - it's not possible to set the value manually."); }
+        }
+
+        public bool ValueIsApdex
+        {
+            get { return Metrics.Any(x => x.Is("apdex")); }
+        }
+
+        public bool ValueIsBytes
+        {
+            get { return Metrics.Any(x => x.EndsWith("bytes/sec", StringComparison.InvariantCultureIgnoreCase)); }
+        }
+
+        public bool ValueIsSeconds
+        {
+            get { return Field.Is("average_response_time"); }
         }
     }
 }

@@ -1,51 +1,29 @@
-﻿using Raven.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 
 namespace SaxxBoard.Widgets.NewRelicWidget
 {
-    public class NewRelicPresenter : IPresenter
+    public class NewRelicPresenter : SimplePresenter
     {
-        public IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession)
+        protected override double? CalculateValue(double? rawValue)
         {
-            var query = (from x in dbSession.Query<SimpleCollectorDataPoint>()
-                         where x.WidgetIdentifier == Widget.InternalIdentifier
-                         orderby x.Date descending
-                         select x).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList();
-
             var config = (NewRelicConfiguration)Widget.GetConfiguration();
-            var valueIsBytes =
-                config.Metrics.Any(x => x.EndsWith("bytes", StringComparison.InvariantCultureIgnoreCase) || x.EndsWith("bytes/sec", StringComparison.InvariantCultureIgnoreCase));
-
-            if (valueIsBytes)
-            {
-                //if the value is bytes, calculate the MB value, because bytes are not very readable
-                var result = (from x in query.OrderBy(x => x.Date)
-                              orderby x.Date
-                              select new SimplePresenterDataPoint
-                                  {
-                                      Date = x.Date,
-                                      RawValue = x.Value.HasValue ? new double?(Math.Round(x.Value.Value / 1024.0 / 1024.0, 2)) : null
-                                  }).ToList();
-
-                foreach (var dataPoint in result)
-                    if (dataPoint.RawValue.HasValue)
-                        dataPoint.FormattedValue = dataPoint.RawValue.Value.ToString("N2") + " MB";
-
-                return result;
-            }
-
-            return from x in query.OrderBy(x => x.Date)
-                   orderby x.Date
-                   select new SimplePresenterDataPoint
-                   {
-                       Date = x.Date,
-                       RawValue = x.Value,
-                       FormattedValue = x.Value.HasValue ? (x.Value.Value.ToString("N0") + (config.IsScaledToPercents ? " %" : "")) : null
-                   };
+            if (config.ValueIsBytes)
+                return rawValue.HasValue ? new double?(Math.Round(rawValue.Value / 1024.0 / 1024.0, 2)) : null;
+            return base.CalculateValue(rawValue);
         }
 
-        public IWidget Widget { get; set; }
+        public override string FormatValue(double? rawValue)
+        {
+            var config = (NewRelicConfiguration)Widget.GetConfiguration();
+            if (rawValue.HasValue && config.ValueIsBytes)
+                return rawValue.Value.ToString("N2") + " MB";
+            if (rawValue.HasValue && config.ValueIsPercent)
+                return rawValue.Value.ToString("N0") + " %";
+            if (rawValue.HasValue && config.ValueIsApdex)
+                return rawValue.Value.ToString("N3");
+            if (rawValue.HasValue && config.ValueIsSeconds)
+                return rawValue.Value.ToString("N2") + "s";
+            return base.FormatValue(rawValue);
+        }
     }
 }

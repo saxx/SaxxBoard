@@ -1,10 +1,23 @@
-﻿namespace SaxxBoard.Widgets.RssWidget
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace SaxxBoard.Widgets.RssWidget
 {
     public class RssConfiguration : SimpleConfiguration
     {
-        public string Url
+        public override double? MinTickSizeOnChart
         {
-            get { return GetSetting("Url", ""); }
+            get { return 1; }
+        }
+
+        public IEnumerable<string> Urls
+        {
+            get { return GetSetting("Urls", "").Split('|').Select(x => x.Trim()); }
+        }
+
+        public override bool SumInsteadOfAverage
+        {
+            get { return true; }
         }
     }
 }

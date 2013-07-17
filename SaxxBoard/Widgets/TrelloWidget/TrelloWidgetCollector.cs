@@ -1,6 +1,7 @@
 ﻿using Elmah;
 using ePunkt.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using TrelloNet;
@@ -9,13 +10,9 @@ namespace SaxxBoard.Widgets.TrelloWidget
 {
     public class TrelloWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleCollectorDataPoint Collect()
+        public override IEnumerable<SimpleCollectorDataPoint> Collect()
         {
-            var newDataPoint = new SimpleCollectorDataPoint
-                {
-                    Date = DateTime.Now,
-                    WidgetIdentifier = Widget.InternalIdentifier,
-                };
+            var newDataPoints = new List<SimpleCollectorDataPoint>();
 
             try
             {
@@ -28,23 +25,40 @@ namespace SaxxBoard.Widgets.TrelloWidget
                 if (board == null)
                     throw new System.ApplicationException("Board '" + config.Board + "' not found.");
 
-                var value = 0;
                 if (config.Lists.Any())
                 {
-                    foreach (var list in trello.Lists.ForBoard(board))
-                        if (config.Lists.Any(x => x.Is(list.Name)))
-                            value += trello.Cards.ForList(list).Count();
+                    for (var i = 0; i < config.Lists.Count(); i++)
+                    {
+                        var value = 0;
+                        foreach (var list in trello.Lists.ForBoard(board))
+                            if (config.Lists.ElementAt(i).Any(x => x.Is(list.Name)))
+                                value += trello.Cards.ForList(list).Count();
+                        newDataPoints.Add(new SimpleCollectorDataPoint
+                        {
+                            Date = DateTime.Now,
+                            SeriesIndex = i,
+                            WidgetIdentifier = Widget.InternalIdentifier,
+                            Value = value
+                        });
+                    }
                 }
                 else
-                    value = trello.Cards.ForBoard(board).Count();
-                newDataPoint.Value = value;
+                {
+                    newDataPoints.Add(new SimpleCollectorDataPoint
+                        {
+                            Date = DateTime.Now,
+                            SeriesIndex = 0,
+                            WidgetIdentifier = Widget.InternalIdentifier,
+                            Value = trello.Cards.ForBoard(board).Count()
+                        });
+                }
             }
             catch (Exception ex)
             {
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 
-            return newDataPoint;
+            return newDataPoints;
         }
     }
 }

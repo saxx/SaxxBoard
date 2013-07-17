@@ -1,15 +1,15 @@
-﻿using System.Threading;
-using System.Web;
-using Elmah;
+﻿using Elmah;
 using ePunkt.Utilities;
 using OpenPop.Pop3;
 using System;
+using System.Collections.Generic;
+using System.Web;
 
 namespace SaxxBoard.Widgets.Pop3Widget
 {
     public class Pop3WidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleCollectorDataPoint Collect()
+        public override IEnumerable<SimpleCollectorDataPoint> Collect()
         {
             var newDataPoint = new SimpleCollectorDataPoint
                 {
@@ -43,7 +43,7 @@ namespace SaxxBoard.Widgets.Pop3Widget
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to fetch POP3. Host: " + host + ", Username: " + username + ", Password: " + password + ".", ex)));
             }
 
-            return newDataPoint;
+            return new[] { newDataPoint };
         }
     }
 }

@@ -1,11 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ePunkt.Utilities;
 
 namespace SaxxBoard.Widgets.TrelloWidget
 {
     public class TrelloConfiguration : SimpleConfiguration
     {
+        public override double? MinTickSizeOnChart
+        {
+            get { return 1; }
+        }
+
+        public override bool SumInsteadOfAverage
+        {
+            get { return true; }
+        }
+
         public string AppKey
         {
             get { return GetSetting("AppKey", ""); }
@@ -21,9 +30,14 @@ namespace SaxxBoard.Widgets.TrelloWidget
             get { return GetSetting("Board", ""); }
         }
 
-        public IEnumerable<string> Lists
+        public IEnumerable<IEnumerable<string>> Lists
         {
-            get { return GetSetting("Lists", "").Split(';').Select(x => x.Trim()).Where(x => x.HasValue()); }
+            get
+            {
+                var series = GetSetting("Lists", "").Split('|').Select(x => x.Trim());
+                return from x in series
+                       select x.Split(';').Select(y => y.Trim());
+            }
         }
     }
 }

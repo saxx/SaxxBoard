@@ -26,5 +26,15 @@
         {
             get { return GetSetting("Password", ""); }
         }
+
+        public override double? MinTickSizeOnChart
+        {
+            get { return 1; }
+        }
+
+        public override bool SumInsteadOfAverage
+        {
+            get { return true; }
+        }
     }
 }

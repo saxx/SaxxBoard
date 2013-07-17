@@ -1,32 +1,59 @@
 ﻿(function ($) {
     $.fn.saxxBoardWidget = function (options) {
         options = $.extend({
-            title: "Chart",
-            dataPoints: [],
+            title: "",
+            series: [],
             height: "250px",
-            isScaledToPercents: false,
-            trend: 0
+            trend: 0,
+            lastValue: "",
+            hasError: false,
+            minTickSize: null,
+            maxValue: null,
+            higherIsBetter: false
         }, options);
 
-        var lastDataPointWasError = false;
-        var lastDataPoint = options.dataPoints[options.dataPoints.length - 1];
-        if (lastDataPoint && lastDataPoint.RawValue == null)
-            lastDataPointWasError = true;
+        function getColorForSeries(index) {
+            if (index == 0)
+                return "#edc240";
+            if (index == 1)
+                return "#afd8f8";
+            if (index == 2)
+                return "#cb4b4b";
+            if (index == 3)
+                return "#4da74d";
+            if (index == 4)
+                return "#9440ed";
+            if (index == 5)
+                return "#568765";
+            if (index == 6)
+                return "#a67f45";
+            if (index == 7)
+                return "#13e551";
+            if (index == 8)
+                return "#4578f9";
+            if (index == 9)
+                return "#f85611";
+            return null;
+        }
 
         var container = $(this);
         container.html("");
 
-        var titleDiv = $("<h4 />").css("margin-bottom", "0");
+        var titleDiv = $("<h3 />").css("margin-bottom", "0");
         var valueDiv = $("<div />")
             .css("float", "right")
-            .html(lastDataPoint.FormattedValue);
+            .html(options.lastValue);
 
         var trendDegrees = (options.trend * 90);
+        if (trendDegrees < -90)
+            trendDegrees = -90;
+        if (trendDegrees > 90)
+            trendDegrees = 90;
         var trendDiv = $("<div />")
             .css("transform", "rotate(" + trendDegrees + "deg)")
-            .css("color", (trendDegrees < 0 ? "#B76474" : (trendDegrees == 0 ? "#eeeeee" : "#9EB764")))
+            .css("color", (trendDegrees < 0 ? (options.higherIsBetter ? "#9EB764" : "#B76474") : (trendDegrees == 0 ? "#eeeeee" : (options.higherIsBetter ? "#B76474" : "#9EB764"))))
             .css("padding-left", "10px")
-            .css("font-size", "400%")
+            .css("font-size", "300%")
             .css("float", "right")
             .css("z-index", "1")
             .css("font-weight", "bold")
@@ -36,16 +63,20 @@
         titleDiv.append(options.title);
         container.append(titleDiv);
 
-
         var chartDiv = $("<div />").css("height", options.height).css("width", "100%");
         container.append(chartDiv);
 
-        var plotSeries = {
-            data: new Array(),
-        };
-        $.each(options.dataPoints, function (i, dataPoint) {
-            var date = new Date(dataPoint.Date);
-            plotSeries.data.push([date.getTime(), dataPoint.RawValue]);
+        var plotSeries = new Array();$.each(options.series, function(i, serie) {
+            var plotSerie = {
+                color: getColorForSeries(i),
+                data: new Array(),
+                label: serie.label + "&nbsp;"
+            };
+            $.each(serie.dataPoints, function (j, dataPoint) {
+                var date = new Date(dataPoint.date);
+                plotSerie.data.push([date.getTime(), dataPoint.rawValue]);
+            });
+            plotSeries.push(plotSerie);
         });
 
         var plotOptions = {
@@ -53,22 +84,30 @@
                 lines: { show: true }
             },
             grid: {
-                backgroundColor: { colors: ["#fff", lastDataPointWasError ? "#f00" : "#eee"] }
+                backgroundColor: { colors: ["#fff", options.hasError ? "#f00" : "#eee"] }
             },
             yaxis: {
                 min: 0,
-                minTickSize: 1,
+                minTickSize: options.minTickSize,
                 tickDecimals: 0,
-                max: (options.isScaledToPercents ? 100 : null),
-                show: (options.isScaledToPercents ? false : true)
+                max: options.maxValue,
+                show: true
             },
             xaxis: {
                 mode: "time",
                 timezone: "browser",
                 minTickSize: [1, "minute"]
+            },
+            legend: {
+                show: options.series.length > 1 ? true : false,
+                position: "nw",
+                margin: [7, 3],
+                sorted: true,
+                backgroundOpacity: 0.6,
+                noColumns: 2
             }
         };
-        chartDiv.plot([plotSeries], plotOptions);
+        chartDiv.plot(plotSeries, plotOptions);
 
         return container;
     };

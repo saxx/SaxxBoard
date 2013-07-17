@@ -6,6 +6,5 @@ namespace SaxxBoard.Widgets
     {
         DateTime Date { get; set; }
         double? RawValue { get; }
-        string FormattedValue { get; }
     }
 }

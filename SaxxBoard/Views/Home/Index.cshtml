@@ -34,12 +34,16 @@
             var boardHub = $.connection.boardHub;
 
             boardHub.client.updateBoard = function (arg) {
-                $.each(arg.widgets, function (i, widget) {
+                $.each(arg, function (i, widget) {
                     $("#chart" + (i + 1)).saxxBoardWidget({
-                        title: widget.Title,
-                        dataPoints: widget.DataPoints,
-                        isScaledToPercents: widget.IsScaledToPercents,
-                        trend: widget.Trend
+                        title: widget.title,
+                        series: widget.series,
+                        trend: widget.trend,
+                        lastValue: widget.lastValue,
+                        hasError: widget.hasError,
+                        minTickSize: widget.minTickSizeOnChart,
+                        maxValue: widget.maxValueOnChart,
+                        higherIsBetter: widget.higherIsBetter
                     });
                 });
                 _lastUpdate = new Date();

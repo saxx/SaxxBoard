@@ -6,15 +6,11 @@ namespace SaxxBoard.Widgets
 {
     public abstract class SimpleCollector<TDataPoint> : ICollector where TDataPoint : SimpleCollectorDataPoint
     {
-        public abstract TDataPoint Collect();
+        public abstract IEnumerable<TDataPoint> Collect();
 
         public IEnumerable<ICollectorDataPoint> Collect(IDocumentSession dbSession)
         {
-            var newDataPoint = Collect();
-            var newDataPoints = new[]
-                {
-                    newDataPoint
-                };
+            var newDataPoints = Collect().ToList();
 
             DeleteOldDataPoints(dbSession);
 

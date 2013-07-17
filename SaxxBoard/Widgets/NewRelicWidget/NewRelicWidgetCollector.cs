@@ -1,5 +1,6 @@
 ﻿using Elmah;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,13 +12,9 @@ namespace SaxxBoard.Widgets.NewRelicWidget
 {
     public class NewRelicWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
     {
-        public override SimpleCollectorDataPoint Collect()
+        public override IEnumerable<SimpleCollectorDataPoint> Collect()
         {
-            var newDataPoint = new SimpleCollectorDataPoint
-                {
-                    Date = DateTime.Now,
-                    WidgetIdentifier = Widget.InternalIdentifier
-                };
+            var newDataPoints = new List<SimpleCollectorDataPoint>();
 
             try
             {
@@ -40,10 +37,23 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                 using (var responseReader = new StreamReader(response.GetResponseStream()))
                 {
                     var xml = XDocument.Load(responseReader);
-                    var averageSum = 0.0;
-                    foreach (var metricNodes in xml.Elements("metrics").Elements("metric"))
-                        averageSum += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
-                    newDataPoint.Value = averageSum;
+
+                    for (var i = 0; i < config.Agents.Count(); i++)
+                    {
+                        var agent = config.Agents.ElementAt(i);
+
+                        var value = 0.0;
+                        foreach (var metricNodes in xml.Elements("metrics").Elements("metric").Where(x => x.Attributes().Any(y => y.Name == "agent_id" && y.Value == agent)))
+                            value += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
+
+                        newDataPoints.Add(new SimpleCollectorDataPoint
+                            {
+                                Date = DateTime.Now,
+                                SeriesIndex = i,
+                                Value = value,
+                                WidgetIdentifier = Widget.InternalIdentifier
+                            });
+                    }
                 }
             }
             catch (WebException ex)
@@ -63,7 +73,7 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                 ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
             }
 
-            return newDataPoint;
+            return newDataPoints;
         }
     }
 }

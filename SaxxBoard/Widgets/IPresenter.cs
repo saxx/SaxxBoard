@@ -6,7 +6,8 @@ namespace SaxxBoard.Widgets
 {
     public interface IPresenter
     {
-        IEnumerable<IPresenterDataPoint> GetData(IDocumentSession dbSession);
+        IEnumerable<IPresenterSeries> GetData(IDocumentSession dbSession);
+        string FormatValue(double? rawValue);
         IWidget Widget { get; set; }
     }
 }
