@@ -26,11 +26,11 @@
             .css("transform", "rotate(" + trendDegrees + "deg)")
             .css("color", (trendDegrees < 0 ? "#B76474" : (trendDegrees == 0 ? "#eeeeee" : "#9EB764")))
             .css("padding-left", "10px")
-            .css("font-size", "800%")
+            .css("font-size", "400%")
             .css("float", "right")
             .css("z-index", "1")
             .css("font-weight", "bold")
-            .html("&#8674;");
+            .html("&#10148;");
         titleDiv.append(trendDiv);
         titleDiv.append(valueDiv);
         titleDiv.append(options.title);
