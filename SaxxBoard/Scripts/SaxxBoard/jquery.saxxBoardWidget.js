@@ -61,6 +61,7 @@
         titleDiv.append(trendDiv);
         titleDiv.append(valueDiv);
         titleDiv.append(options.title);
+        titleDiv.append(" <sub class='ticker' data-time='" + (new Date().getTime()) + "' style='font-size:40%;font-weight:normal;'></sub");
         container.append(titleDiv);
 
         var chartDiv = $("<div />").css("height", options.height).css("width", "100%");

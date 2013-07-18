@@ -18,8 +18,6 @@ namespace SaxxBoard
 
         public void Collect()
         {
-            var hasCollected = false;
-
             using (var dbSession = _db.OpenSession())
             {
                 foreach (var widget in _widgets.CurrentWidgets)
@@ -33,13 +31,14 @@ namespace SaxxBoard
                         var widgetCollector = widget.GetCollector();
                         widgetCollector.Collect(dbSession);
                         _remainingInterval[widget.InternalIdentifier] = widget.GetConfiguration().RefreshIntervalInSeconds;
-                        hasCollected = true;
+                        if (_widgets.OnCollectedCallback != null)
+                            _widgets.OnCollectedCallback.Invoke(widget);
+
+                        //if we already have a collection this cycle, we wait for the next cycle to do the next collection
+                        return;
                     }
                 }
             }
-
-            if (hasCollected && _widgets.OnCollectedCallback != null)
-                _widgets.OnCollectedCallback.Invoke();
         }
     }
 }

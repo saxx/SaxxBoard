@@ -25,7 +25,10 @@ namespace SaxxBoard.Controllers
         {
             using (var dbSession = _db.OpenSession())
             {
-                var viewModel = new IndexViewModel();
+                var viewModel = new IndexViewModel
+                    {
+                        CurrentWidgets = _widgets
+                    };
                 return View(viewModel);
             }
         }

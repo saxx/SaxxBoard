@@ -1,9 +1,7 @@
-﻿using SaxxBoard.Widgets;
-using System.Collections.Generic;
-
-namespace SaxxBoard.ViewModels.Home
+﻿namespace SaxxBoard.ViewModels.Home
 {
     public class IndexViewModel
     {
+        public WidgetCollection CurrentWidgets { get; set; }
     }
 }

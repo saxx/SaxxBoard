@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using Elmah;
+using Microsoft.AspNet.SignalR;
 using Raven.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SaxxBoard.Widgets;
+using ePunkt.Utilities;
 
 namespace SaxxBoard.Hubs
 {
@@ -21,58 +24,64 @@ namespace SaxxBoard.Hubs
 
         private void UpdateBoard()
         {
-            var result = new List<JsonWidget>();
-
             foreach (var widget in _widgets.CurrentWidgets)
+                UpdateBoard(widget);
+        }
+
+        private void UpdateBoard(IWidget widget)
+        {
+            var config = widget.GetConfiguration();
+
+            var jsonWidget = new JsonWidget
+                {
+                    identifier = widget.InternalIdentifier,
+                    title = widget.Title,
+                    refreshIntervalInSeconds = config.RefreshIntervalInSeconds,
+                    minTickSizeOnChart = config.MinTickSizeOnChart,
+                    maxValueOnChart = config.MaxValueOnChart,
+                    higherIsBetter = config.HigherValueIsBetter
+                };
+
+            using (var dbSession = _db.OpenSession())
             {
-                var config = widget.GetConfiguration();
-
-                var jsonWidget = new JsonWidget
-                    {
-                        title = widget.Title,
-                        refreshIntervalInSeconds = config.RefreshIntervalInSeconds,
-                        minTickSizeOnChart = config.MinTickSizeOnChart,
-                        maxValueOnChart = config.MaxValueOnChart,
-                        higherIsBetter = config.HigherValueIsBetter
-                    };
-
-                using (var dbSession = _db.OpenSession())
-                {
-                    var series = widget.GetPresenter().GetData(dbSession).ToList();
-                    jsonWidget.series = (from x in series
-                                         select new JsonSeries
-                                             {
-                                                 label = x.Label,
-                                                 dataPoints = (from y in x.DataPoints
-                                                               select new JsonDataPoint
-                                                                   {
-                                                                       date = y.Date,
-                                                                       rawValue = y.RawValue
-                                                                   }).ToList()
-                                             }).ToList();
-                }
-
-                jsonWidget.hasError = jsonWidget.series.Any(x => x.dataPoints.Any() && x.dataPoints.Last().rawValue == null);
-
-                if (config.SumInsteadOfAverage)
-                {
-                    var sum = jsonWidget.series.Where(x => x.dataPoints.Any()).Select(x => x.dataPoints.Last().rawValue).Sum();
-                    jsonWidget.lastValue = widget.GetPresenter().FormatValue(sum);
-                }
-                else
-                {
-                    var average = jsonWidget.series.Where(x => x.dataPoints.Any()).Select(x => x.dataPoints.Last().rawValue).Average();
-                    jsonWidget.lastValue = widget.GetPresenter().FormatValue(average);
-                }
-
-                jsonWidget.trend = jsonWidget.series.Average(x => CalculateTrend(x.dataPoints.ToList()));
-                foreach (var series in jsonWidget.series)
-                    series.dataPoints = FillMissingDataPointsWithNull(config.MaxDataPointsInChart, config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
-
-                result.Add(jsonWidget);
+                var series = widget.GetPresenter().GetData(dbSession).ToList();
+                jsonWidget.series = (from x in series
+                                     select new JsonSeries
+                                         {
+                                             label = x.Label,
+                                             dataPoints = (from y in x.DataPoints
+                                                           select new JsonDataPoint
+                                                               {
+                                                                   date = y.Date,
+                                                                   rawValue = y.RawValue
+                                                               }).ToList()
+                                         }).ToList();
             }
 
-            Clients.All.updateBoard(result);
+            jsonWidget.hasError = jsonWidget.series.Any(x => x.dataPoints.Any() && x.dataPoints.Last().rawValue == null);
+
+            if (config.SumInsteadOfAverage)
+            {
+                var sum = jsonWidget.series.Where(x => x.dataPoints.Any()).Select(x => x.dataPoints.Last().rawValue).Sum();
+                jsonWidget.lastValue = widget.GetPresenter().FormatValue(sum);
+            }
+            else
+            {
+                var average = jsonWidget.series.Where(x => x.dataPoints.Any()).Select(x => x.dataPoints.Last().rawValue).Average();
+                jsonWidget.lastValue = widget.GetPresenter().FormatValue(average);
+            }
+
+            if (jsonWidget.series.Any())
+                jsonWidget.trend = jsonWidget.series.Average(x => CalculateTrend(x.dataPoints.ToList()));
+            foreach (var series in jsonWidget.series)
+                series.dataPoints = FillMissingDataPointsWithNull(config.MaxDataPointsInChart, config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
+
+            Clients.All.updateBoard(jsonWidget);
+        }
+
+        public void Refresh()
+        {
+            UpdateBoard();
         }
 
         private double CalculateTrend(IList<JsonDataPoint> dataPoints)
@@ -112,14 +121,10 @@ namespace SaxxBoard.Hubs
             return dataPoints.OrderByDescending(x => x.date).Take(maxDataPoints).OrderBy(x => x.date);
         }
 
-        public void Refresh()
-        {
-            UpdateBoard();
-        }
-
         // ReSharper disable InconsistentNaming
         public class JsonWidget
         {
+            public string identifier { get; set; }
             public string title { get; set; }
             public int refreshIntervalInSeconds { get; set; }
             public IEnumerable<JsonSeries> series { get; set; }
