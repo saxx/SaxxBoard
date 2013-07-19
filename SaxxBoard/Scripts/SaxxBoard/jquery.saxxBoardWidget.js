@@ -9,7 +9,9 @@
             hasError: false,
             minTickSize: null,
             maxValue: null,
-            higherIsBetter: false
+            higherIsBetter: false,
+            lastUpdate: null,
+            nextUpdate: null
         }, options);
 
         function getColorForSeries(index) {
@@ -37,9 +39,11 @@
         }
 
         var container = $(this);
-        container.html("");
+        container
+            .css("margin-bottom", "30px")
+            .html("");
 
-        var titleDiv = $("<h3 />").css("margin-bottom", "0");
+        var titleDiv = $("<h3 />").css("margin", "-35px 5px 0 5px");
         var valueDiv = $("<div />")
             .css("float", "right")
             .html(options.lastValue);
@@ -53,7 +57,7 @@
             .css("transform", "rotate(" + trendDegrees + "deg)")
             .css("color", (trendDegrees < 0 ? (options.higherIsBetter ? "#9EB764" : "#B76474") : (trendDegrees == 0 ? "#eeeeee" : (options.higherIsBetter ? "#B76474" : "#9EB764"))))
             .css("padding-left", "10px")
-            .css("font-size", "300%")
+            .css("font-size", "200%")
             .css("float", "right")
             .css("z-index", "1")
             .css("font-weight", "bold")
@@ -61,13 +65,28 @@
         titleDiv.append(trendDiv);
         titleDiv.append(valueDiv);
         titleDiv.append(options.title);
-        titleDiv.append(" <sub class='ticker' data-time='" + (new Date().getTime()) + "' style='font-size:40%;font-weight:normal;'></sub");
+
+        var lastUpdate = new Date(options.lastUpdate);
+        var nextUpdate = new Date(options.nextUpdate);
+
+        if (options.lastUpdate) {
+            titleDiv.append(" <span class='lastUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' style='font-size:40%;font-weight:normal;'></span>");
+        }
+
+        if (options.nextUpdate && options.lastUpdate) {
+            var progressDiv = $("<div class='nextUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' data-nextupdate='" + nextUpdate.getTime() + "' />")
+                .css("width", "0%")
+                .css("height", "31px")
+                .css("background-color", "#eee");
+            container.append(progressDiv);
+        }
+
         container.append(titleDiv);
 
         var chartDiv = $("<div />").css("height", options.height).css("width", "100%");
         container.append(chartDiv);
 
-        var plotSeries = new Array();$.each(options.series, function(i, serie) {
+        var plotSeries = new Array(); $.each(options.series, function (i, serie) {
             var plotSerie = {
                 color: getColorForSeries(i),
                 data: new Array(),

@@ -14,7 +14,7 @@
 
     <div class="span4" data-widgetIdentifier="@widget.InternalIdentifier"></div>
 
-    @if (count++ % 3 == 3)
+    @if (count++ % 3 == 2)
     {
         <text>@Html.Raw("</div>")</text>
     }
@@ -38,27 +38,42 @@
                     hasError: widget.hasError,
                     minTickSize: widget.minTickSizeOnChart,
                     maxValue: widget.maxValueOnChart,
-                    higherIsBetter: widget.higherIsBetter
+                    higherIsBetter: widget.higherIsBetter,
+                    lastUpdate: widget.lastUpdate,
+                    nextUpdate: widget.nextUpdate,
+                    refreshInterval: widget.refreshIntervalInSeconds
                 });
             };
 
             // Start the connection
             $.connection.hub.start().done(function () {
-                setInterval("updateUpdateDate();", 100);
+                setInterval("updateUpdateDate();", 250);
                 boardHub.server.refresh();
             });
         });
 
         function updateUpdateDate() {
-            $.each($(".ticker"), function(i, span) {
+            $.each($(".lastUpdateTicker"), function (i, span) {
                 span = $(span);
-                var seconds = Math.floor((new Date().getTime() - span.data("time")) / 1000);
+                var lastUpdate = span.data("lastupdate");
+                var seconds = Math.floor((new Date().getTime() - lastUpdate) / 1000);
                 if (seconds == 1)
                     span.html("1 second ago.");
                 if (seconds == 0)
                     span.html("Just now.");
                 else
                     span.html(seconds + " seconds ago.");
+            });
+
+            $.each($(".nextUpdateTicker"), function (i, div) {
+                div = $(div);
+                var lastUpdate = div.data("lastupdate");
+                var nextUpdate = div.data("nextupdate");
+
+                var difference = 100 / (nextUpdate - lastUpdate) * (nextUpdate - new Date().getTime());
+                if (difference < 0)
+                    difference = 0;
+                div.css("width", difference + "%");
             });
         }
     </script>

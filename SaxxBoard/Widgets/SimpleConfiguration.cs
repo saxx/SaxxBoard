@@ -10,7 +10,7 @@ namespace SaxxBoard.Widgets
 
         public int RefreshIntervalInSeconds
         {
-            get { return GetSetting("RefreshIntervalInSeconds", 300); }
+            get { return GetSetting("RefreshIntervalInSeconds", 180); }
         }
 
         public int MaxDataPointsInChart

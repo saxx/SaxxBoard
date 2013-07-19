@@ -1,4 +1,6 @@
-﻿namespace SaxxBoard.Widgets
+﻿using System;
+
+namespace SaxxBoard.Widgets
 {
     public class SimpleWidget<TCollector, TPresenter, TConfiguration> : IWidget
         where TCollector : class, ICollector, new()
@@ -36,5 +38,8 @@
 
         public string Title { get; set; }
         public string InternalIdentifier { get; set; }
+
+        public DateTime? LastUpdate { get; set; }
+        public DateTime? NextUpdate { get; set; }
     }
 }

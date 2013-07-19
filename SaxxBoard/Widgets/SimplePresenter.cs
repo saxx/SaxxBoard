@@ -21,7 +21,7 @@ namespace SaxxBoard.Widgets
                                     select new
                                         {
                                             SeriesIndex = g.Key,
-                                            DataPoints = g.OrderBy(x => x.Date).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList()
+                                            DataPoints = g.OrderByDescending(x => x.Date).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList()
                                         });
             var result = new List<SimplePresenterSeries>();
             foreach (var x in groupedQuery)

@@ -44,5 +44,5 @@ namespace SaxxBoard
         public CollectedDelegate OnCollectedCallback { get; set; }
     }
 
-    public delegate void CollectedDelegate(IWidget widget);
+    public delegate void CollectedDelegate(IWidget widget, bool updateCallerOnly);
 }

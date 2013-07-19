@@ -1,4 +1,5 @@
-﻿using Raven.Client;
+﻿using System;
+using Raven.Client;
 using System.Collections.Generic;
 
 namespace SaxxBoard
@@ -7,8 +8,6 @@ namespace SaxxBoard
     {
         private readonly IDocumentStore _db;
         private readonly WidgetCollection _widgets;
-
-        private Dictionary<string, int> _remainingInterval = new Dictionary<string, int>();
 
         public Collector(IDocumentStore db, WidgetCollection widgets)
         {
@@ -22,17 +21,21 @@ namespace SaxxBoard
             {
                 foreach (var widget in _widgets.CurrentWidgets)
                 {
-                    if (!_remainingInterval.ContainsKey(widget.InternalIdentifier))
-                        _remainingInterval[widget.InternalIdentifier] = 0;
-                    _remainingInterval[widget.InternalIdentifier] -= 1;
+                    var config = widget.GetConfiguration();
+                    var random = new Random();
 
-                    if (_remainingInterval[widget.InternalIdentifier] <= 0)
+                    if (!widget.NextUpdate.HasValue)
+                        widget.NextUpdate = DateTime.Now.AddSeconds(random.Next(1, config.RefreshIntervalInSeconds));
+
+
+                    if (widget.NextUpdate < DateTime.Now)
                     {
                         var widgetCollector = widget.GetCollector();
                         widgetCollector.Collect(dbSession);
-                        _remainingInterval[widget.InternalIdentifier] = widget.GetConfiguration().RefreshIntervalInSeconds;
+                        widget.LastUpdate = DateTime.Now;
+                        widget.NextUpdate = DateTime.Now.AddSeconds(config.RefreshIntervalInSeconds);
                         if (_widgets.OnCollectedCallback != null)
-                            _widgets.OnCollectedCallback.Invoke(widget);
+                            _widgets.OnCollectedCallback.Invoke(widget, false);
 
                         //if we already have a collection this cycle, we wait for the next cycle to do the next collection
                         return;

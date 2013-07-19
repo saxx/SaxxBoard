@@ -22,13 +22,13 @@ namespace SaxxBoard.Hubs
             _widgets.OnCollectedCallback = UpdateBoard;
         }
 
-        private void UpdateBoard()
+        private void UpdateBoard(bool updateCallerOnly)
         {
             foreach (var widget in _widgets.CurrentWidgets)
-                UpdateBoard(widget);
+                UpdateBoard(widget, updateCallerOnly);
         }
 
-        private void UpdateBoard(IWidget widget)
+        private void UpdateBoard(IWidget widget, bool updateCallerOnly)
         {
             var config = widget.GetConfiguration();
 
@@ -39,7 +39,10 @@ namespace SaxxBoard.Hubs
                     refreshIntervalInSeconds = config.RefreshIntervalInSeconds,
                     minTickSizeOnChart = config.MinTickSizeOnChart,
                     maxValueOnChart = config.MaxValueOnChart,
-                    higherIsBetter = config.HigherValueIsBetter
+                    higherIsBetter = config.HigherValueIsBetter,
+                    lastUpdate = widget.LastUpdate,
+                    nextUpdate = widget.NextUpdate,
+                    refreshIntervalInSecods = config.RefreshIntervalInSeconds
                 };
 
             using (var dbSession = _db.OpenSession())
@@ -73,15 +76,16 @@ namespace SaxxBoard.Hubs
 
             if (jsonWidget.series.Any())
                 jsonWidget.trend = jsonWidget.series.Average(x => CalculateTrend(x.dataPoints.ToList()));
+
             foreach (var series in jsonWidget.series)
-                series.dataPoints = FillMissingDataPointsWithNull(config.MaxDataPointsInChart, config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
+                series.dataPoints = FillMissingDataPointsWithNull(config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
 
             Clients.All.updateBoard(jsonWidget);
         }
 
         public void Refresh()
         {
-            UpdateBoard();
+            UpdateBoard(true);
         }
 
         private double CalculateTrend(IList<JsonDataPoint> dataPoints)
@@ -103,12 +107,14 @@ namespace SaxxBoard.Hubs
             return 0;
         }
 
-        private IEnumerable<JsonDataPoint> FillMissingDataPointsWithNull(int maxDataPoints, int refreshIntervalInSeconds, IList<JsonDataPoint> dataPoints)
+        private IEnumerable<JsonDataPoint> FillMissingDataPointsWithNull(int refreshIntervalInSeconds, IList<JsonDataPoint> dataPoints)
         {
+            dataPoints = dataPoints.OrderBy(x => x.date).ToList();
             for (var i = 0; i < dataPoints.Count - 1; i++)
             {
                 var difference = (dataPoints[i + 1].date - dataPoints[i].date).TotalSeconds;
-                while (difference >= refreshIntervalInSeconds * 2)
+
+                while (difference >= refreshIntervalInSeconds * 1.5)
                 {
                     difference -= refreshIntervalInSeconds;
                     dataPoints.Add(new JsonDataPoint
@@ -118,7 +124,7 @@ namespace SaxxBoard.Hubs
                 }
             }
 
-            return dataPoints.OrderByDescending(x => x.date).Take(maxDataPoints).OrderBy(x => x.date);
+            return dataPoints.OrderBy(x => x.date);
         }
 
         // ReSharper disable InconsistentNaming
@@ -134,6 +140,9 @@ namespace SaxxBoard.Hubs
             public double? minTickSizeOnChart { get; set; }
             public double? maxValueOnChart { get; set; }
             public bool higherIsBetter { get; set; }
+            public DateTime? lastUpdate { get; set; }
+            public DateTime? nextUpdate { get; set; }
+            public int refreshIntervalInSecods { get; set; }
         }
 
         public class JsonSeries
@@ -146,6 +155,11 @@ namespace SaxxBoard.Hubs
         {
             public double? rawValue { get; set; }
             public DateTime date { get; set; }
+
+            public override string ToString()
+            {
+                return date.ToString() + ": " + (rawValue.HasValue ? rawValue.Value.ToString("N3") : "null");
+            }
         }
         // ReSharper restore InconsistentNaming
     }
