@@ -77,7 +77,7 @@
             var progressDiv = $("<div class='nextUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' data-nextupdate='" + nextUpdate.getTime() + "' />")
                 .css("width", "100%")
                 .css("background-color", "white")
-                .css("height", "31px")
+                .css("height", "32px")
                 .css("margin-bottom", "-36px");
             container.append(progressDiv);
         }

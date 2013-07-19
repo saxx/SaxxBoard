@@ -59,7 +59,7 @@
                 var seconds = Math.floor((new Date().getTime() - lastUpdate) / 1000);
                 if (seconds == 1)
                     span.html("1 second ago.");
-                if (seconds == 0)
+                if (seconds <= 0)
                     span.html("Just now.");
                 else
                     span.html(seconds + " seconds ago.");
