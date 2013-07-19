@@ -78,7 +78,7 @@
                 .css("width", "100%")
                 .css("background-color", "white")
                 .css("height", "31px")
-                .css("margin-bottom", "-37px");
+                .css("margin-bottom", "-36px");
             container.append(progressDiv);
         }
 

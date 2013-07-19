@@ -20,7 +20,7 @@ namespace SaxxBoard.Widgets
 
         public int MaxDataPointsToStore
         {
-            get { return GetSetting("MaxDataPointsToStore", 5000); }
+            get { return GetSetting("MaxDataPointsToStore", 250); }
         }
 
         public IEnumerable<string> SeriesLabels
