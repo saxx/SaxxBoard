@@ -110,21 +110,32 @@ namespace SaxxBoard.Hubs
         private IEnumerable<JsonDataPoint> FillMissingDataPointsWithNull(int refreshIntervalInSeconds, IList<JsonDataPoint> dataPoints)
         {
             dataPoints = dataPoints.OrderBy(x => x.date).ToList();
+
+            var newDataPoints = new List<JsonDataPoint>();
             for (var i = 0; i < dataPoints.Count - 1; i++)
             {
                 var difference = (dataPoints[i + 1].date - dataPoints[i].date).TotalSeconds;
-
-                while (difference >= refreshIntervalInSeconds * 1.5)
+                if (difference >= refreshIntervalInSeconds * 1.5)
                 {
-                    difference -= refreshIntervalInSeconds;
-                    dataPoints.Add(new JsonDataPoint
+                    newDataPoints.Add(new JsonDataPoint
                         {
-                            date = dataPoints[i].date.AddSeconds(difference)
+                            date = dataPoints[i].date.AddSeconds(1)
+                        });
+                    newDataPoints.Add(new JsonDataPoint    
+                        {
+                            date = dataPoints[i + 1].date.AddSeconds(-1)
                         });
                 }
             }
 
-            return dataPoints.OrderBy(x => x.date);
+            newDataPoints.AddRange(dataPoints);
+            dataPoints = newDataPoints.OrderBy(x => x.date).ToList();
+
+            //500 datapoints is the absolute max. we're gonna paint, even with the empty datapoints included
+            var diffToMax = dataPoints.Count - 500;
+            dataPoints = dataPoints.Skip(diffToMax).ToList();
+
+            return dataPoints;
         }
 
         // ReSharper disable InconsistentNaming

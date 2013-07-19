@@ -43,7 +43,7 @@
             .css("margin-bottom", "30px")
             .html("");
 
-        var titleDiv = $("<h3 />").css("margin", "-35px 5px 0 5px");
+        var titleDiv = $("<h3 />").css("margin", "0 5px 0 5px");
         var valueDiv = $("<div />")
             .css("float", "right")
             .html(options.lastValue);
@@ -75,9 +75,10 @@
 
         if (options.nextUpdate && options.lastUpdate) {
             var progressDiv = $("<div class='nextUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' data-nextupdate='" + nextUpdate.getTime() + "' />")
-                .css("width", "0%")
+                .css("width", "100%")
+                .css("background-color", "white")
                 .css("height", "31px")
-                .css("background-color", "#eee");
+                .css("margin-bottom", "-37px");
             container.append(progressDiv);
         }
 

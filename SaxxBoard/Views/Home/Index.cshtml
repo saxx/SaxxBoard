@@ -73,7 +73,10 @@
                 var difference = 100 / (nextUpdate - lastUpdate) * (nextUpdate - new Date().getTime());
                 if (difference < 0)
                     difference = 0;
-                div.css("width", difference + "%");
+                if (difference > 0)
+                    div.css("width", difference + "%").css("background-color", "#eee");
+                else 
+                    div.css("width", "100%").css("background-color", "white");
             });
         }
     </script>
