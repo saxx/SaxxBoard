@@ -64,6 +64,9 @@
     <Reference Include="Glimpse.Mvc4">
       <HintPath>..\packages\Glimpse.Mvc4.1.3.2\lib\net40\Glimpse.Mvc4.dll</HintPath>
     </Reference>
+    <Reference Include="Glimpse.SignalR">
+      <HintPath>..\packages\Glimpse.SignalR.1.0.0\lib\net40\Glimpse.SignalR.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.1.1.2\lib\net40\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
