@@ -1,10 +1,6 @@
 ﻿using MailSendbox;
 using Microsoft.AspNet.SignalR;
-using Ninject;
-using Raven.Client;
-using Raven.Client.Indexes;
 using SaxxBoard.App_Start;
-using SaxxBoard.Widgets;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
