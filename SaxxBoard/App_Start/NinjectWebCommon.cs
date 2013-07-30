@@ -1,8 +1,11 @@
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNet.SignalR.SystemWeb.Infrastructure;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Stop")]
@@ -50,7 +53,7 @@ namespace SaxxBoard.App_Start
 
             kernel.Bind<IDocumentStore>().ToMethod(x =>
                 {
-                    var store = new DocumentStore {ConnectionStringName = "RavenDB"};
+                    var store = new DocumentStore { ConnectionStringName = "RavenDB" };
                     store.Initialize();
                     IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), store);
                     return store;
@@ -72,6 +75,26 @@ namespace SaxxBoard.App_Start
             var collector = kernel.Get<Collector>();
 
             collectorThread.Start(collector);
+        }
+    }
+
+    public class SignalRNinjectDependencyResolver : DefaultDependencyResolver
+    {
+        private readonly IKernel _kernel;
+
+        public SignalRNinjectDependencyResolver(IKernel kernel)
+        {
+            _kernel = kernel;
+        }
+
+        public override object GetService(Type serviceType)
+        {
+            return _kernel.TryGet(serviceType) ?? base.GetService(serviceType);
+        }
+
+        public override IEnumerable<object> GetServices(Type serviceType)
+        {
+            return _kernel.GetAll(serviceType).Concat(base.GetServices(serviceType));
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using MailSendbox;
 using Microsoft.AspNet.SignalR;
 using Ninject;
+using Raven.Client;
+using Raven.Client.Indexes;
 using SaxxBoard.App_Start;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SaxxBoard.Widgets;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -19,33 +19,15 @@ namespace SaxxBoard
             AreaRegistration.RegisterAllAreas();
 
             RouteTable.Routes.MapHubs();
-            GlobalHost.DependencyResolver = new SignalRNinjectDependencyResolver(NinjectWebCommon.Bootstrapper.Kernel);
+
+            // SignalR needs a special kernel to work properly on Azure Websites
+            var kernel = NinjectWebCommon.Bootstrapper.Kernel;
+            GlobalHost.DependencyResolver = new SignalRNinjectDependencyResolver(kernel);
 
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-        }
-
-
-        public class SignalRNinjectDependencyResolver : DefaultDependencyResolver
-        {
-            private readonly IKernel _kernel;
-
-            public SignalRNinjectDependencyResolver(IKernel kernel)
-            {
-                _kernel = kernel;
-            }
-
-            public override object GetService(Type serviceType)
-            {
-                return _kernel.TryGet(serviceType) ?? base.GetService(serviceType);
-            }
-
-            public override IEnumerable<object> GetServices(Type serviceType)
-            {
-                return _kernel.GetAll(serviceType).Concat(base.GetServices(serviceType));
-            }
         }
     }
 }

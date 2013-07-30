@@ -26,20 +26,28 @@ namespace SaxxBoard.Widgets
 
         private void DeleteOldDataPoints(IDocumentSession dbSession)
         {
-            var query = dbSession.Query<TDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier).OrderBy(x => x.Date);
+            var availableSeriesIndexes = (from x in dbSession.Query<SimpleCollectorDataPoint>()
+                                          where x.WidgetIdentifier == Widget.InternalIdentifier
+                                          select x.SeriesIndex).Distinct().ToList();
 
-            var count = query.Count();
-            var difference = count - Widget.GetConfiguration().MaxDataPointsToStore;
-
-            //delete at most 10 datapoints at once
-            if (difference > 10)
-                difference = 10;
-
-            if (difference > 0)
+            foreach (var seriesIndex in availableSeriesIndexes)
             {
-                foreach (var dataPointToDelete in query.Take(difference))
-                    dbSession.Delete(dataPointToDelete);
-                dbSession.SaveChanges();
+                var seriesIndexClosure = seriesIndex;
+                var query = dbSession.Query<TDataPoint>().Where(x => x.WidgetIdentifier == Widget.InternalIdentifier && x.SeriesIndex == seriesIndexClosure).OrderBy(x => x.Date);
+
+                var count = query.Count();
+                var difference = count - Widget.GetConfiguration().MaxDataPointsToStore;
+
+                //delete at most 10 datapoints at once
+                if (difference > 10)
+                    difference = 10;
+
+                if (difference > 0)
+                {
+                    foreach (var dataPointToDelete in query.Take(difference))
+                        dbSession.Delete(dataPointToDelete);
+                    dbSession.SaveChanges();
+                }
             }
         }
 

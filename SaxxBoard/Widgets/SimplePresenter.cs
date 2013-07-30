@@ -11,25 +11,23 @@ namespace SaxxBoard.Widgets
         {
             var config = Widget.GetConfiguration();
 
-            var query = (from x in dbSession.Query<SimpleCollectorDataPoint>()
-                         where x.WidgetIdentifier == Widget.InternalIdentifier
-                         orderby x.Date descending
-                         select x).ToList();
-            var groupedQuery = (from x in query
-                                group x by x.SeriesIndex
-                                    into g
-                                    select new
-                                        {
-                                            SeriesIndex = g.Key,
-                                            DataPoints = g.OrderByDescending(x => x.Date).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList()
-                                        });
+            var availableSeriesIndexes = (from x in dbSession.Query<SimpleCollectorDataPoint>()
+                                          where x.WidgetIdentifier == Widget.InternalIdentifier
+                                          select x.SeriesIndex).Distinct().ToList();
+
             var result = new List<SimplePresenterSeries>();
-            foreach (var x in groupedQuery)
+            foreach (var seriesIndex in availableSeriesIndexes)
             {
+                var seriesIndexClosure = seriesIndex;
+                var dataPoints = (from x in dbSession.Query<SimpleCollectorDataPoint>()
+                                  where x.WidgetIdentifier == Widget.InternalIdentifier && x.SeriesIndex == seriesIndexClosure
+                                  orderby x.Date descending
+                                  select x).Take(Widget.GetConfiguration().MaxDataPointsInChart).ToList();
+
                 var serie = new SimplePresenterSeries
                     {
-                        Label = config.SeriesLabels.Count() > x.SeriesIndex ? config.SeriesLabels.ElementAt(x.SeriesIndex) : "",
-                        DataPoints = from y in x.DataPoints
+                        Label = config.SeriesLabels.Count() > seriesIndex ? config.SeriesLabels.ElementAt(seriesIndex) : "",
+                        DataPoints = from y in dataPoints
                                      select new SimplePresenterDataPoint
                                          {
                                              Date = y.Date,
@@ -39,6 +37,7 @@ namespace SaxxBoard.Widgets
 
                 result.Add(serie);
             }
+
             return result;
         }
 
