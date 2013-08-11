@@ -10,17 +10,17 @@ namespace SaxxBoard.Widgets
 
         public int RefreshIntervalInSeconds
         {
-            get { return GetSetting("RefreshIntervalInSeconds", 180); }
+            get { return GetSetting("RefreshIntervalInSeconds", 300); }
         }
 
         public int MaxDataPointsInChart
         {
-            get { return GetSetting("MaxDataPointsInChart", 200); }
+            get { return GetSetting("MaxDataPointsInChart", 100); }
         }
 
         public int MaxDataPointsToStore
         {
-            get { return GetSetting("MaxDataPointsToStore", 250); }
+            get { return GetSetting("MaxDataPointsToStore", 100); }
         }
 
         public IEnumerable<string> SeriesLabels

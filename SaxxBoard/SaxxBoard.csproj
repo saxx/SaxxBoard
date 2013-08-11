@@ -63,6 +63,10 @@
     <Reference Include="Glimpse.Elmah">
       <HintPath>..\packages\Glimpse.Elmah.1.1.1\lib\net40\Glimpse.Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="Glimpse.Mvc4, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Glimpse.Mvc4.1.3.3\lib\net40\Glimpse.Mvc4.dll</HintPath>
+    </Reference>
     <Reference Include="Glimpse.SignalR">
       <HintPath>..\packages\Glimpse.SignalR.1.0.0\lib\net40\Glimpse.SignalR.dll</HintPath>
     </Reference>
@@ -181,7 +185,6 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="Code\Collector.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="App_Start\GlimpseSecurityPolicy.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
