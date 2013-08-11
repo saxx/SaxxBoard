@@ -24,8 +24,7 @@ namespace SaxxBoard
                     var random = new Random();
 
                     if (!widget.NextUpdate.HasValue)
-                        widget.NextUpdate = DateTime.Now.AddSeconds(random.Next(1, config.RefreshIntervalInSeconds));
-
+                        widget.NextUpdate = DateTime.Now;
 
                     if (widget.NextUpdate < DateTime.Now)
                     {
