@@ -1,6 +1,5 @@
 ﻿using MailSendbox;
 using Microsoft.AspNet.SignalR;
-using SaxxBoard.App_Start;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;

@@ -1,6 +1,5 @@
-﻿using System;
-using Raven.Client;
-using System.Collections.Generic;
+﻿using Raven.Client;
+using System;
 
 namespace SaxxBoard
 {

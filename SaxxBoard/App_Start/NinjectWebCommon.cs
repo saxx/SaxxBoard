@@ -7,10 +7,10 @@ using Raven.Client.Indexes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-[assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Start")]
-[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Stop")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.NinjectWebCommon), "Start")]
+[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.NinjectWebCommon), "Stop")]
 
-namespace SaxxBoard.App_Start
+namespace SaxxBoard
 {
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
@@ -41,7 +41,6 @@ namespace SaxxBoard.App_Start
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
 
             RegisterServices(kernel);
-            Boot(kernel);
 
             return kernel;
         }
@@ -65,16 +64,7 @@ namespace SaxxBoard.App_Start
                     return collector;
                 });
 
-            kernel.Bind<CollectorThread>().ToSelf().InSingletonScope();
             kernel.Bind<WidgetCollection>().ToSelf().InSingletonScope();
-        }
-
-        private static void Boot(IKernel kernel)
-        {
-            var collectorThread = kernel.Get<CollectorThread>();
-            var collector = kernel.Get<Collector>();
-
-            collectorThread.Start(collector);
         }
     }
 
