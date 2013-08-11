@@ -15,12 +15,12 @@ namespace SaxxBoard.Widgets
 
         public int MaxDataPointsInChart
         {
-            get { return GetSetting("MaxDataPointsInChart", 100); }
+            get { return GetSetting("MaxDataPointsInChart", 200); }
         }
 
         public int MaxDataPointsToStore
         {
-            get { return GetSetting("MaxDataPointsToStore", 100); }
+            get { return GetSetting("MaxDataPointsToStore", 200); }
         }
 
         public IEnumerable<string> SeriesLabels
