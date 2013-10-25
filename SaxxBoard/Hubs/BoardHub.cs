@@ -1,11 +1,10 @@
-﻿using Elmah;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using Raven.Client;
+using SaxxBoard.Widgets;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using SaxxBoard.Widgets;
-using ePunkt.Utilities;
 
 namespace SaxxBoard.Hubs
 {
@@ -36,13 +35,8 @@ namespace SaxxBoard.Hubs
                 {
                     identifier = widget.InternalIdentifier,
                     title = widget.Title,
-                    refreshIntervalInSeconds = config.RefreshIntervalInSeconds,
                     minTickSizeOnChart = config.MinTickSizeOnChart,
-                    maxValueOnChart = config.MaxValueOnChart,
-                    higherIsBetter = config.HigherValueIsBetter,
-                    lastUpdate = widget.LastUpdate,
-                    nextUpdate = widget.NextUpdate,
-                    refreshIntervalInSecods = config.RefreshIntervalInSeconds
+                    maxValueOnChart = config.MaxValueOnChart
                 };
 
             using (var dbSession = _db.OpenSession())
@@ -74,9 +68,6 @@ namespace SaxxBoard.Hubs
                 jsonWidget.lastValue = widget.GetPresenter().FormatValue(average);
             }
 
-            if (jsonWidget.series.Any())
-                jsonWidget.trend = jsonWidget.series.Average(x => CalculateTrend(x.dataPoints.ToList()));
-
             foreach (var series in jsonWidget.series)
                 series.dataPoints = FillMissingDataPointsWithNull(config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
 
@@ -86,25 +77,6 @@ namespace SaxxBoard.Hubs
         public void Refresh()
         {
             UpdateBoard(true);
-        }
-
-        private double CalculateTrend(IList<JsonDataPoint> dataPoints)
-        {
-            var count = dataPoints.Count;
-
-            if (count > 2)
-            {
-                var firstPart = (int)Math.Round(count * 0.75);
-
-                var firstPartAverage = dataPoints.Take(firstPart).Where(x => x.rawValue.HasValue).Average(x => x.rawValue.Value);
-                var secondPartAverage = dataPoints.Skip(firstPart).Where(x => x.rawValue.HasValue).Average(x => x.rawValue.Value);
-                var maxValue = dataPoints.Where(x => x.rawValue.HasValue).Average(x => x.rawValue.Value);
-                if (maxValue <= 0)
-                    return 0;
-
-                return (firstPartAverage - secondPartAverage) / maxValue;
-            }
-            return 0;
         }
 
         private IEnumerable<JsonDataPoint> FillMissingDataPointsWithNull(int refreshIntervalInSeconds, IList<JsonDataPoint> dataPoints)
@@ -121,7 +93,7 @@ namespace SaxxBoard.Hubs
                         {
                             date = dataPoints[i].date.AddSeconds(1)
                         });
-                    newDataPoints.Add(new JsonDataPoint    
+                    newDataPoints.Add(new JsonDataPoint
                         {
                             date = dataPoints[i + 1].date.AddSeconds(-1)
                         });
@@ -143,17 +115,11 @@ namespace SaxxBoard.Hubs
         {
             public string identifier { get; set; }
             public string title { get; set; }
-            public int refreshIntervalInSeconds { get; set; }
             public IEnumerable<JsonSeries> series { get; set; }
-            public double trend { get; set; }
             public string lastValue { get; set; }
             public bool hasError { get; set; }
             public double? minTickSizeOnChart { get; set; }
             public double? maxValueOnChart { get; set; }
-            public bool higherIsBetter { get; set; }
-            public DateTime? lastUpdate { get; set; }
-            public DateTime? nextUpdate { get; set; }
-            public int refreshIntervalInSecods { get; set; }
         }
 
         public class JsonSeries
@@ -169,7 +135,7 @@ namespace SaxxBoard.Hubs
 
             public override string ToString()
             {
-                return date.ToString() + ": " + (rawValue.HasValue ? rawValue.Value.ToString("N3") : "null");
+                return date.ToString(CultureInfo.CurrentCulture) + ": " + (rawValue.HasValue ? rawValue.Value.ToString("N3") : "null");
             }
         }
         // ReSharper restore InconsistentNaming

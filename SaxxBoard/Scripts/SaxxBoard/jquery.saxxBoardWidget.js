@@ -4,14 +4,10 @@
             title: "",
             series: [],
             height: "250px",
-            trend: 0,
             lastValue: "",
             hasError: false,
             minTickSize: null,
             maxValue: null,
-            higherIsBetter: false,
-            lastUpdate: null,
-            nextUpdate: null
         }, options);
 
         function getColorForSeries(index) {
@@ -40,48 +36,11 @@
 
         var container = $(this);
         container
-            .css("margin-bottom", "30px")
+            .css("margin-bottom", "15px")
             .html("");
 
-        var titleDiv = $("<h3 />").css("margin", "0 5px 0 5px");
-        var valueDiv = $("<div />")
-            .css("float", "right")
-            .html(options.lastValue);
-
-        var trendDegrees = (options.trend * 90);
-        if (trendDegrees < -90)
-            trendDegrees = -90;
-        if (trendDegrees > 90)
-            trendDegrees = 90;
-        var trendDiv = $("<div />")
-            .css("transform", "rotate(" + trendDegrees + "deg)")
-            .css("color", (trendDegrees < 0 ? (options.higherIsBetter ? "#9EB764" : "#B76474") : (trendDegrees == 0 ? "#eeeeee" : (options.higherIsBetter ? "#B76474" : "#9EB764"))))
-            .css("padding-left", "10px")
-            .css("font-size", "200%")
-            .css("float", "right")
-            .css("z-index", "1")
-            .css("font-weight", "bold")
-            .html("&#10148;");
-        titleDiv.append(trendDiv);
-        titleDiv.append(valueDiv);
-        titleDiv.append(options.title);
-
-        var lastUpdate = new Date(options.lastUpdate);
-        var nextUpdate = new Date(options.nextUpdate);
-
-        if (options.lastUpdate) {
-            titleDiv.append(" <span class='lastUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' style='font-size:40%;font-weight:normal;'></span>");
-        }
-
-        if (options.nextUpdate && options.lastUpdate) {
-            var progressDiv = $("<div class='nextUpdateTicker' data-lastupdate='" + lastUpdate.getTime() + "' data-nextupdate='" + nextUpdate.getTime() + "' />")
-                .css("width", "100%")
-                .css("background-color", "white")
-                .css("height", "32px")
-                .css("margin-bottom", "-36px");
-            container.append(progressDiv);
-        }
-
+        var titleDiv = $("<h4 />").css("text-align", "center").css("margin","0");
+        titleDiv.append(options.title + " &raquo; " + options.lastValue);
         container.append(titleDiv);
 
         var chartDiv = $("<div />").css("height", options.height).css("width", "100%");
