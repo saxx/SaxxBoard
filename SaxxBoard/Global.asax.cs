@@ -13,8 +13,6 @@ namespace SaxxBoard
         {
             AreaRegistration.RegisterAllAreas();
 
-            RouteTable.Routes.MapHubs();
-
             // SignalR needs a special kernel to work properly on Azure Websites
             var kernel = NinjectWebCommon.Bootstrapper.Kernel;
             GlobalHost.DependencyResolver = new SignalRNinjectDependencyResolver(kernel);

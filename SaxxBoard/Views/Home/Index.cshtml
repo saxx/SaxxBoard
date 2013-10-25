@@ -9,10 +9,10 @@
 
     @if (count % 3 == 0)
     {
-        <text>@Html.Raw("<div class=\"row-fluid\">")</text>
+        <text>@Html.Raw("<div class=\"row\">")</text>
     }
 
-    <div class="span4" data-widgetIdentifier="@widget.InternalIdentifier"></div>
+    <div class="col-lg-4" data-widgetIdentifier="@widget.InternalIdentifier"></div>
 
     @if (count++ % 3 == 2)
     {

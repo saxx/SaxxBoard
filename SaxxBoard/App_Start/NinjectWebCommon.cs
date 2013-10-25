@@ -1,6 +1,5 @@
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Infrastructure;
-using Microsoft.AspNet.SignalR.SystemWeb.Infrastructure;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
@@ -48,7 +47,7 @@ namespace SaxxBoard
         private static void RegisterServices(IKernel kernel)
         {
             //this is required to make SignalR work on Azure
-            kernel.Bind<IProtectedData>().To<MachineKeyProtectedData>();
+            //kernel.Bind<IProtectedData>().To<MachineKeyProtectedData>();
 
             kernel.Bind<IDocumentStore>().ToMethod(x =>
                 {

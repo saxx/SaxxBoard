@@ -16,8 +16,8 @@ namespace MailSendbox
                 "~/Scripts/SaxxBoard/jquery.saxxBoardWidget.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                "~/Content/bootstrap.css",
-                "~/Content/bootstrap-responsive.css"));
+                "~/Content/bootstrap/bootstrap.css",
+                "~/Content/Site.css"));
         }
     }
 }
