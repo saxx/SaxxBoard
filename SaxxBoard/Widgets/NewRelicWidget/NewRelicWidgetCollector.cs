@@ -10,67 +10,73 @@ using System.Xml.Linq;
 
 namespace SaxxBoard.Widgets.NewRelicWidget
 {
-    public class NewRelicWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
+    public class NewRelicWidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
     {
-        public override IEnumerable<SimpleCollectorDataPoint> Collect()
+        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
         {
-            var newDataPoints = new List<SimpleCollectorDataPoint>();
+            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
 
-            try
+
+            var config = (NewRelicWidgetConfiguration)Widget.Configuration;
+            for (var seriesIndex = 0; seriesIndex < config.Series.Count(); seriesIndex++)
             {
-                var config = (NewRelicConfiguration)Widget.GetConfiguration();
+                var seriesConfig = (NewRelicWidgetConfigurationSeries)config.Series.ElementAt(seriesIndex);
 
-                var interval = config.RefreshIntervalInSeconds;
-                if (interval < 60)
-                    interval = 60;
-                var startDate = DateTime.Now.AddSeconds(-interval).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
-                var endDate = DateTime.Now.AddMinutes(1).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
-
-                var url = "https://api.newrelic.com/api/v1/accounts/" + config.Account + "/metrics/data.xml?begin=" + startDate + "&end=" + endDate + "&summary=1&field=" + config.Field;
-                url = config.Agents.Aggregate(url, (current, agent) => current + ("&agent_id[]=" + agent));
-                url = config.Metrics.Aggregate(url, (current, metric) => current + ("&metrics[]=" + metric));
-
-                var request = WebRequest.Create(url);
-                request.Headers.Add("x-api-key", config.ApiKey);
-
-                var response = request.GetResponse();
-                using (var responseReader = new StreamReader(response.GetResponseStream()))
+                try
                 {
-                    var xml = XDocument.Load(responseReader);
 
-                    for (var i = 0; i < config.Agents.Count(); i++)
+                    var interval = config.RefreshIntervalInSeconds;
+                    if (interval < 60)
+                        interval = 60;
+                    var startDate = DateTime.Now.AddSeconds(-interval).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+                    var endDate = DateTime.Now.AddMinutes(1).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                    var url = "https://api.newrelic.com/api/v1/accounts/" + seriesConfig.Account + "/metrics/data.xml?begin=" + startDate + "&end=" + endDate + "&summary=1&field=" + seriesConfig.Field;
+                    url = seriesConfig.Agents.Aggregate(url, (current, agent) => current + ("&agent_id[]=" + agent));
+                    url = seriesConfig.Metrics.Aggregate(url, (current, metric) => current + ("&metrics[]=" + metric));
+
+                    var request = WebRequest.Create(url);
+                    request.Headers.Add("x-api-key", seriesConfig.ApiKey);
+
+                    var response = request.GetResponse();
+                    using (var responseReader = new StreamReader(response.GetResponseStream()))
                     {
-                        var agent = config.Agents.ElementAt(i);
+                        var xml = XDocument.Load(responseReader);
 
-                        var value = 0.0;
-                        foreach (var metricNodes in xml.Elements("metrics").Elements("metric").Where(x => x.Attributes().Any(y => y.Name == "agent_id" && y.Value == agent)))
-                            value += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
+                        for (var agentIndex = 0; agentIndex < seriesConfig.Agents.Count(); agentIndex++)
+                        {
+                            var agent = seriesConfig.Agents.ElementAt(agentIndex);
 
-                        newDataPoints.Add(new SimpleCollectorDataPoint
+                            var value = 0.0;
+                            foreach (var metricNodes in xml.Elements("metrics").Elements("metric").Where(x => x.Attributes().Any(y => y.Name == "agent_id" && y.Value == agent)))
+                                value += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
+
+                            newDataPoints.Add(new WidgetCollectorBaseDataPoint
                             {
                                 Date = DateTime.Now,
-                                SeriesIndex = i,
+                                SeriesIndex = seriesIndex,
                                 Value = value,
                                 WidgetIdentifier = Widget.InternalIdentifier
                             });
+                        }
                     }
                 }
-            }
-            catch (WebException ex)
-            {
-                using (var response = ex.Response)
+                catch (WebException ex)
                 {
-                    using (var data = response.GetResponseStream())
-                    using (var reader = new StreamReader(data))
+                    using (var response = ex.Response)
                     {
-                        var errorMessage = reader.ReadToEnd();
-                        ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to call NewRelic API: " + errorMessage, ex)));
+                        using (var data = response.GetResponseStream())
+                        using (var reader = new StreamReader(data))
+                        {
+                            var errorMessage = reader.ReadToEnd();
+                            ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to call NewRelic API: " + errorMessage,ex)));
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
+                catch (Exception ex)
+                {
+                    ErrorLog.GetDefault(HttpContext.Current).Log(new Error(ex));
+                }
             }
 
             return newDataPoints;

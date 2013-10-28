@@ -2,17 +2,21 @@
 
 namespace SaxxBoard.Widgets
 {
-    public class SimpleWidget<TCollector, TPresenter, TConfiguration> : IWidget
-        where TCollector : class, ICollector, new()
-        where TPresenter : class, IPresenter, new()
-        where TConfiguration : class, IConfiguration, new()
+    public class WidgetBase<TCollector, TPresenter, TConfiguration> : IWidget
+        where TCollector : class, IWidgetCollector, new()
+        where TPresenter : class, IWidgetPresenter, new()
+        where TConfiguration : class, IWidgetConfiguration
     {
 
         private TCollector _collector;
         private TPresenter _presenter;
-        private TConfiguration _configuration;
 
-        public ICollector GetCollector()
+        public WidgetBase(TConfiguration configuration)
+        {
+            Configuration = configuration;
+        } 
+
+        public IWidgetCollector GetCollector()
         {
             return _collector ?? (_collector = new TCollector
                 {
@@ -20,7 +24,7 @@ namespace SaxxBoard.Widgets
                 });
         }
 
-        public IPresenter GetPresenter()
+        public IWidgetPresenter GetPresenter()
         {
             return _presenter ?? (_presenter = new TPresenter
             {
@@ -28,13 +32,7 @@ namespace SaxxBoard.Widgets
             });
         }
 
-        public IConfiguration GetConfiguration()
-        {
-            return _configuration ?? (_configuration = new TConfiguration
-            {
-                Widget = this
-            });
-        }
+        public IWidgetConfiguration Configuration { get; private set; }
 
         public string Title { get; set; }
         public string InternalIdentifier { get; set; }

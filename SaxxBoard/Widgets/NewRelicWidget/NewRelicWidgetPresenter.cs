@@ -2,11 +2,11 @@
 
 namespace SaxxBoard.Widgets.NewRelicWidget
 {
-    public class NewRelicPresenter : SimplePresenter
+    public class NewRelicWidgetPresenter : WidgetPresenterBase
     {
         protected override double? CalculateValue(double? rawValue)
         {
-            var config = (NewRelicConfiguration)Widget.GetConfiguration();
+            var config = (NewRelicWidgetConfiguration)Widget.Configuration;
             if (config.ValueIsBytes)
                 return rawValue.HasValue ? new double?(Math.Round(rawValue.Value / 1024.0 / 1024.0, 2)) : null;
             return base.CalculateValue(rawValue);
@@ -14,7 +14,7 @@ namespace SaxxBoard.Widgets.NewRelicWidget
 
         public override string FormatValue(double? rawValue)
         {
-            var config = (NewRelicConfiguration)Widget.GetConfiguration();
+            var config = (NewRelicWidgetConfiguration)Widget.Configuration;
             if (rawValue.HasValue && config.ValueIsBytes)
                 return rawValue.Value.ToString("N2") + " MB";
             if (rawValue.HasValue && config.ValueIsPercent)

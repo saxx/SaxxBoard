@@ -1,6 +1,10 @@
-﻿namespace SaxxBoard.Widgets.RandomWidget
+﻿
+namespace SaxxBoard.Widgets.RandomWidget
 {
-    public class RandomWidget : SimpleWidget<RandomWidgetCollector, SimplePresenter, SimpleConfiguration>
+    public class RandomWidget : WidgetBase<RandomWidgetCollector, WidgetPresenterBase, WidgetConfigurationBase>
     {
+        public RandomWidget(WidgetConfigurationBase configuration) : base(configuration)
+        {         
+        }
     }
 }

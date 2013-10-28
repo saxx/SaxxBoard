@@ -4,17 +4,15 @@ using System.Linq;
 
 namespace SaxxBoard.Widgets.RandomWidget
 {
-    public class RandomWidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
+    public class RandomWidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
     {
-        public override IEnumerable<SimpleCollectorDataPoint> Collect()
+        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
         {
             var random = new Random();
+            var result = new List<WidgetCollectorBaseDataPoint>();
 
-            var config = Widget.GetConfiguration();
-            var result = new List<SimpleCollectorDataPoint>();
-
-            for (var i = 0; i <= config.SeriesLabels.Count() - 1; i++)
-                result.Add(new SimpleCollectorDataPoint
+            for (var i = 0; i <= Widget.Configuration.Series.Count() - 1; i++)
+                result.Add(new WidgetCollectorBaseDataPoint
                     {
                         Date = DateTime.Now,
                         Value = random.Next(0, 100),

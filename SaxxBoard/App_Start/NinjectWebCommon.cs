@@ -1,5 +1,4 @@
 using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;

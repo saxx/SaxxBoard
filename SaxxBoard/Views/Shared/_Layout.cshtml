@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Refresh" content="600">
+    <meta http-equiv="Refresh" content="3600">
     <title>SaxxBoard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Styles.Render("~/Content/css")
@@ -25,7 +25,10 @@
                 <ul class="nav navbar-nav">
                     <li><a href="https://github.com/saxx/SaxxBoard">Fork on GitHub</a></li>
                 </ul>
-            </div><!--/.nav-collapse -->
+                <p id="clock" class="navbar-text pull-right">
+                    
+                </p>
+            </div>
         </div>
     </div>
 
@@ -36,5 +39,25 @@
     @Scripts.Render("~/scripts/libs")
     <script src="~/signalr/hubs"></script>
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            setInterval("updateClock();", 333);
+        });
+        function updateClock() {
+            var date = new Date();
+
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            if (hours < 10)
+                hours = "0" + hours;
+            if (minutes < 10)
+                minutes = "0" + minutes;
+            if (seconds < 10)
+                seconds = "0" + seconds;
+
+            $("#clock").html(hours + ":" + minutes + ":" + seconds);
+        }
+    </script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace SaxxBoard.Widgets
 {
@@ -11,8 +10,8 @@ namespace SaxxBoard.Widgets
         DateTime? LastUpdate { get; set; }
         DateTime? NextUpdate { get; set; }
 
-        ICollector GetCollector();
-        IPresenter GetPresenter();
-        IConfiguration GetConfiguration();
+        IWidgetCollector GetCollector();
+        IWidgetPresenter GetPresenter();
+        IWidgetConfiguration Configuration { get; }
     }
 }

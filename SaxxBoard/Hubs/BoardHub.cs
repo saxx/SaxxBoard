@@ -23,20 +23,20 @@ namespace SaxxBoard.Hubs
 
         private void UpdateBoard(bool updateCallerOnly)
         {
-            foreach (var widget in _widgets.CurrentWidgets)
+            foreach (var widget in _widgets.Widgets)
                 UpdateBoard(widget, updateCallerOnly);
         }
 
         private void UpdateBoard(IWidget widget, bool updateCallerOnly)
         {
-            var config = widget.GetConfiguration();
+            var config = widget.Configuration;
 
             var jsonWidget = new JsonWidget
                 {
                     identifier = widget.InternalIdentifier,
                     title = widget.Title,
-                    minTickSizeOnChart = config.MinTickSizeOnChart,
-                    maxValueOnChart = config.MaxValueOnChart
+                    minTickSizeOnChart = config.ChartConfiguration.MinTickSize,
+                    maxValueOnChart = config.ChartConfiguration.MaxValue
                 };
 
             using (var dbSession = _db.OpenSession())
@@ -57,7 +57,7 @@ namespace SaxxBoard.Hubs
 
             jsonWidget.hasError = jsonWidget.series.Any(x => x.dataPoints.Any() && x.dataPoints.Last().rawValue == null);
 
-            if (config.SumInsteadOfAverage)
+            if (config.ChartConfiguration.SumInsteadOfAverage)
             {
                 var sum = jsonWidget.series.Where(x => x.dataPoints.Any()).Select(x => x.dataPoints.Last().rawValue).Sum();
                 jsonWidget.lastValue = widget.GetPresenter().FormatValue(sum);
@@ -87,7 +87,7 @@ namespace SaxxBoard.Hubs
             for (var i = 0; i < dataPoints.Count - 1; i++)
             {
                 var difference = (dataPoints[i + 1].date - dataPoints[i].date).TotalSeconds;
-                if (difference >= refreshIntervalInSeconds * 1.5)
+                if (difference >= refreshIntervalInSeconds * 2)
                 {
                     newDataPoints.Add(new JsonDataPoint
                         {

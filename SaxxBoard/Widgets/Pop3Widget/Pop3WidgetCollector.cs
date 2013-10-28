@@ -1,4 +1,5 @@
-﻿using Elmah;
+﻿using System.Linq;
+using Elmah;
 using ePunkt.Utilities;
 using OpenPop.Pop3;
 using System;
@@ -7,43 +8,51 @@ using System.Web;
 
 namespace SaxxBoard.Widgets.Pop3Widget
 {
-    public class Pop3WidgetCollector : SimpleCollector<SimpleCollectorDataPoint>
+    public class Pop3WidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
     {
-        public override IEnumerable<SimpleCollectorDataPoint> Collect()
+        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
         {
-            var newDataPoint = new SimpleCollectorDataPoint
-                {
-                    Date = DateTime.Now,
-                    WidgetIdentifier = Widget.InternalIdentifier
-                };
-
-            var config = (Pop3Configuration)Widget.GetConfiguration();
-            var host = config.Host;
-            var port = config.Port;
-            var useSsl = config.UseSsl;
-            var username = config.Username;
-            var password = config.Password;
-
-            try
+            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
+            var config = (Pop3WidgetConfiguration)Widget.Configuration;
+            
+            for (var i = 0; i < config.Series.Count(); i++)
             {
-                using (var pop3Client = new Pop3Client())
+                var seriesConfig = ((Pop3WidgetConfigurationSeries)config.Series.ElementAt(i));
+
+                var host = seriesConfig.Host;
+                var port = seriesConfig.Port;
+                var useSsl = seriesConfig.UseSsl;
+                var username = seriesConfig.Username;
+                var password = seriesConfig.Password;
+
+                try
                 {
-                    pop3Client.Connect(host, port, useSsl);
-                    if (username.HasValue())
-                        pop3Client.Authenticate(username, password);
+                    using (var pop3Client = new Pop3Client())
+                    {
+                        pop3Client.Connect(host, port, useSsl);
+                        if (username.HasValue())
+                            pop3Client.Authenticate(username, password);
 
-                    var messageCount = pop3Client.GetMessageCount();
-                    newDataPoint.Value = messageCount;
+                        var messageCount = pop3Client.GetMessageCount();
+                        pop3Client.Disconnect();
 
-                    pop3Client.Disconnect();
+                        newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                        {
+                            Date = DateTime.Now,
+                            SeriesIndex = i,
+                            Value = messageCount,
+                            WidgetIdentifier = Widget.InternalIdentifier
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to fetch POP3. Host: " + host + ", Username: " + username + ", Password: " + password + ".", ex)));
                 }
             }
-            catch (Exception ex)
-            {
-                ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to fetch POP3. Host: " + host + ", Username: " + username + ", Password: " + password + ".", ex)));
-            }
 
-            return new[] { newDataPoint };
+
+            return newDataPoints;
         }
     }
 }

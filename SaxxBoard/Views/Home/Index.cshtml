@@ -3,7 +3,7 @@
 
 @{ var count = 0; }
 
-@foreach (var widget in Model.CurrentWidgets.CurrentWidgets)
+@foreach (var widget in Model.CurrentWidgets.Widgets)
 {
     <text>
 
@@ -42,7 +42,6 @@
 
             // Start the connection
             $.connection.hub.start().done(function () {
-                setInterval("updateUpdateDate();", 250);
                 boardHub.server.refresh();
             });
         });

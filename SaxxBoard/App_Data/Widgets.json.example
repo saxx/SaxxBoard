@@ -1,0 +1,31 @@
+﻿{
+	"widgets": [
+		{
+			"type": "RandomWidget",
+			"title": "Some random widget",
+			"configuration": {
+				"refreshIntervalInSeconds": 60,
+				"series": [
+					{
+						"label": "Series I"
+					},
+					{
+						"label": "Series II"
+					}
+				]
+			}
+		},
+		{
+			"type": "RandomWidget",
+			"title": "Another random widget",
+			"configuration": {
+				"refreshIntervalInSeconds": 10,
+				"series": [
+					{
+						"label": "Series I"
+					}
+				]
+			}
+		}
+	]
+}

@@ -18,10 +18,9 @@ namespace SaxxBoard
         {
             using (var dbSession = _db.OpenSession())
             {
-                foreach (var widget in _widgets.CurrentWidgets)
+                foreach (var widget in _widgets.Widgets)
                 {
-                    var config = widget.GetConfiguration();
-                    var random = new Random();
+                    var config = widget.Configuration;
 
                     if (!widget.NextUpdate.HasValue)
                         widget.NextUpdate = DateTime.Now;
