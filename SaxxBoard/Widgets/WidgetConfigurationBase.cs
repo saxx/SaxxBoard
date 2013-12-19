@@ -11,17 +11,17 @@ namespace SaxxBoard.Widgets
             if (widgetConfiguration.refreshIntervalInSeconds != null)
                 RefreshIntervalInSeconds = widgetConfiguration.refreshIntervalInSeconds;
             else
-                RefreshIntervalInSeconds = 60*15;
+                RefreshIntervalInSeconds = 60 * 15;
 
             if (widgetConfiguration.maxDataPointsInChart != null)
                 MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart;
             else
-                MaxDataPointsInChart = 300;
+                MaxDataPointsInChart = 500;
 
             if (widgetConfiguration.maxDataPointsInStore != null)
                 MaxDataPointsToStore = widgetConfiguration.maxDataPointsInStore;
             else
-                MaxDataPointsToStore = 300;
+                MaxDataPointsToStore = 500;
 
             var series = new List<IWidgetConfigurationSeries>();
             foreach (var s in widgetConfiguration.series)
