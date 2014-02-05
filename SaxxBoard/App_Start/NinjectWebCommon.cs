@@ -1,13 +1,12 @@
 using Microsoft.AspNet.SignalR;
+using SaxxBoard.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using SaxxBoard.Models;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.NinjectWebCommon), "Start")]
-[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.NinjectWebCommon), "Stop")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Start")]
+[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.App_Start.NinjectWebCommon), "Stop")]
 
-namespace SaxxBoard
+namespace SaxxBoard.App_Start
 {
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;

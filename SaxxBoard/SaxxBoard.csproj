@@ -196,7 +196,6 @@
     <Compile Include="Models\DataPoint.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="ViewModels\Home\IndexViewModel.cs" />
-    <Compile Include="Widgets\Interfaces\IWidgetPresenterSeries.cs" />
     <Compile Include="Widgets\Interfaces\IWidgetCollector.cs" />
     <Compile Include="Widgets\Interfaces\IWidgetPresenter.cs" />
     <Compile Include="Widgets\Interfaces\IWidget.cs" />

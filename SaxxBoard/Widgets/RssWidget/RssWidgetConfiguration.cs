@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SaxxBoard.Widgets.Interfaces;
 
 namespace SaxxBoard.Widgets.RssWidget
 {

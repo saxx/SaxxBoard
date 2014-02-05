@@ -1,7 +1,6 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SaxxBoard.Widgets
+namespace SaxxBoard.Widgets.Interfaces
 {
     public interface IWidgetConfiguration
     {

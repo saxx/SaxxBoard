@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SaxxBoard.Widgets
+namespace SaxxBoard.Widgets.Interfaces
 {
     public interface IWidget
     {

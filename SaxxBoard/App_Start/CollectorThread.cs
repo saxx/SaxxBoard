@@ -3,10 +3,10 @@ using System.Threading;
 using Elmah;
 using Ninject;
 
-[assembly: WebActivator.PostApplicationStartMethod(typeof(SaxxBoard.CollectorThread), "Start")]
-[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.CollectorThread), "Stop")]
+[assembly: WebActivator.PostApplicationStartMethod(typeof(SaxxBoard.App_Start.CollectorThread), "Start")]
+[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.App_Start.CollectorThread), "Stop")]
 
-namespace SaxxBoard
+namespace SaxxBoard.App_Start
 {
     public static class CollectorThread
     {

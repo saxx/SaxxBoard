@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SaxxBoard.Models;
+using SaxxBoard.Widgets.Interfaces;
 
 namespace SaxxBoard.Widgets
 {
@@ -14,6 +15,7 @@ namespace SaxxBoard.Widgets
                                           select x.SeriesIndex).Distinct().ToList();
 
             var result = new List<WidgetPresenterBaseSeries>();
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var seriesIndex in availableSeriesIndexes)
             {
                 var seriesIndexClosure = seriesIndex;

@@ -1,8 +1,7 @@
 namespace SaxxBoard.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class Initial : DbMigration
     {
         public override void Up()
@@ -11,16 +10,16 @@ namespace SaxxBoard.Migrations
                 "dbo.DataPoints",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(false, true),
                         WidgetIdentifier = c.String(),
-                        SeriesIndex = c.Int(nullable: false),
-                        DateTime = c.DateTime(nullable: false),
+                        SeriesIndex = c.Int(false),
+                        DateTime = c.DateTime(false),
                         Value = c.Double(),
                     })
                 .PrimaryKey(t => t.Id);
-            
+
         }
-        
+
         public override void Down()
         {
             DropTable("dbo.DataPoints");

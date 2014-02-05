@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SaxxBoard.Widgets.RssWidget;
+using SaxxBoard.Widgets.Interfaces;
 
 namespace SaxxBoard.Widgets.Pop3Widget
 {

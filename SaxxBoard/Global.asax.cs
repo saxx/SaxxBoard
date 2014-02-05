@@ -1,9 +1,9 @@
-﻿using MailSendbox;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using SaxxBoard.App_Start;
 
 namespace SaxxBoard
 {

@@ -33,6 +33,7 @@ namespace SaxxBoard.Widgets.TrelloWidget
                     if (seriesConfig.Lists.Any())
                     {
                         var value = 0;
+                        // ReSharper disable once LoopCanBeConvertedToQuery
                         foreach (var list in trello.Lists.ForBoard(board))
                             if (seriesConfig.Lists.Any(x => x.Is(list.Name)))
                                 value += trello.Cards.ForList(list).Count();

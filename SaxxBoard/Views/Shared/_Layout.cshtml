@@ -26,7 +26,7 @@
                     <li><a href="https://github.com/saxx/SaxxBoard">Fork on GitHub</a></li>
                 </ul>
                 <p id="clock" class="navbar-text pull-right">
-                    
+
                 </p>
             </div>
         </div>
@@ -37,7 +37,9 @@
     </div>
 
     @Scripts.Render("~/scripts/libs")
+    @* ReSharper disable Html.PathError *@
     <script src="~/signalr/hubs"></script>
+    @* ReSharper restore Html.PathError *@
     @RenderSection("scripts", required: false)
     <script>
         $(document).ready(function () {

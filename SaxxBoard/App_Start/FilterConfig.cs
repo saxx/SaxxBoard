@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace SaxxBoard
+namespace SaxxBoard.App_Start
 {
     public class FilterConfig
     {

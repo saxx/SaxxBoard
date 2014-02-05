@@ -1,4 +1,5 @@
 ﻿using System;
+using SaxxBoard.Widgets.Interfaces;
 
 namespace SaxxBoard.Widgets
 {

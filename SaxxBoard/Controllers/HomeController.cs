@@ -27,7 +27,7 @@ namespace SaxxBoard.Controllers
             }
             catch (Exception ex)
             {
-                throw new System.ApplicationException("Database seems not to work: " + ex.Message, ex);
+                throw new ApplicationException("Database seems not to work: " + ex.Message, ex);
             }
 
             var viewModel = new IndexViewModel

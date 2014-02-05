@@ -1,7 +1,7 @@
-﻿using SaxxBoard.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SaxxBoard.Models;
 
-namespace SaxxBoard.Widgets
+namespace SaxxBoard.Widgets.Interfaces
 {
     public interface IWidgetCollector
     {

@@ -1,6 +1,6 @@
 ﻿using System.Web.Optimization;
 
-namespace MailSendbox
+namespace SaxxBoard.App_Start
 {
     public class BundleConfig
     {

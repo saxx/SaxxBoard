@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SaxxBoard.Widgets.Interfaces;
 
 namespace SaxxBoard.Widgets
 {
@@ -8,15 +9,8 @@ namespace SaxxBoard.Widgets
 
         public WidgetConfigurationBase(dynamic widgetConfiguration)
         {
-            if (widgetConfiguration.refreshIntervalInSeconds != null)
-                RefreshIntervalInSeconds = widgetConfiguration.refreshIntervalInSeconds;
-            else
-                RefreshIntervalInSeconds = 60 * 5;
-
-            if (widgetConfiguration.maxDataPointsInChart != null)
-                MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart;
-            else
-                MaxDataPointsInChart = 1000;
+            RefreshIntervalInSeconds = widgetConfiguration.refreshIntervalInSeconds ?? 60 * 5;
+            MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart ?? 1000;
 
             var series = new List<IWidgetConfigurationSeries>();
             foreach (var s in widgetConfiguration.series)

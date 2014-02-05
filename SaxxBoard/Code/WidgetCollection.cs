@@ -2,14 +2,15 @@
 using ePunkt.Utilities;
 using Newtonsoft.Json.Linq;
 using SaxxBoard.Widgets;
+using SaxxBoard.Widgets.Interfaces;
 using SaxxBoard.Widgets.NewRelicWidget;
 using SaxxBoard.Widgets.Pop3Widget;
 using SaxxBoard.Widgets.RandomWidget;
 using SaxxBoard.Widgets.RssWidget;
+using SaxxBoard.Widgets.TrelloWidget;
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Hosting;
-using SaxxBoard.Widgets.TrelloWidget;
 
 namespace SaxxBoard
 {
@@ -22,7 +23,7 @@ namespace SaxxBoard
 
         private void BuildWidgets()
         {
-            var json = File.ReadAllText(HostingEnvironment.MapPath("~/App_Data/Widgets.json"));
+            var json = File.ReadAllText(HostingEnvironment.MapPath("~/App_Data/Widgets.json") ?? "");
             dynamic config = JObject.Parse(json);
 
             var widgets = new List<IWidget>();

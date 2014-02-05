@@ -40,7 +40,11 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                     request.Headers.Add("x-api-key", seriesConfig.ApiKey);
 
                     var response = request.GetResponse();
-                    using (var responseReader = new StreamReader(response.GetResponseStream()))
+                    var responseStream = response.GetResponseStream();
+                    if (responseStream == null)
+                        throw new ArgumentException("ResponseStream is null.");
+
+                    using (var responseReader = new StreamReader(responseStream))
                     {
                         var xml = XDocument.Load(responseReader);
 
@@ -49,8 +53,14 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                             var agent = seriesConfig.Agents.ElementAt(agentIndex);
 
                             var value = 0.0;
+                            // ReSharper disable once LoopCanBeConvertedToQuery
                             foreach (var metricNodes in xml.Elements("metrics").Elements("metric").Where(x => x.Attributes().Any(y => y.Name == "agent_id" && y.Value == agent)))
-                                value += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
+                            {
+                                var fieldElement = metricNodes.Element("field");
+                                if (fieldElement != null)
+                                    value += double.Parse(fieldElement.Value, CultureInfo.InvariantCulture);
+                                value += 0;
+                            }
 
                             newDataPoints.Add(new DataPoint
                             {
@@ -65,14 +75,15 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                 catch (WebException ex)
                 {
                     using (var response = ex.Response)
-                    {
-                        using (var data = response.GetResponseStream())
-                        using (var reader = new StreamReader(data))
-                        {
-                            var errorMessage = reader.ReadToEnd();
-                            ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to call NewRelic API: " + errorMessage,ex)));
-                        }
-                    }
+                    using (var responseStream = response.GetResponseStream())
+                        if (responseStream != null)
+                            using (var reader = new StreamReader(responseStream))
+                            {
+                                var errorMessage = reader.ReadToEnd();
+                                ErrorLog.GetDefault(HttpContext.Current).Log(new Error(new System.ApplicationException("Unable to call NewRelic API: " + errorMessage, ex)));
+                            }
+                        else
+                            throw new ArgumentException("ResponseStream is null.");
                 }
                 catch (Exception ex)
                 {

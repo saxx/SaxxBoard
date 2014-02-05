@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 using SaxxBoard.Models;
-using SaxxBoard.Widgets;
+using SaxxBoard.Widgets.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
