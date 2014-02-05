@@ -1,10 +1,9 @@
 using Microsoft.AspNet.SignalR;
-using Raven.Client;
-using Raven.Client.Document;
-using Raven.Client.Indexes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SaxxBoard.Models;
+
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SaxxBoard.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SaxxBoard.NinjectWebCommon), "Stop")]
 
@@ -48,17 +47,11 @@ namespace SaxxBoard
             //this is required to make SignalR work on Azure
             //kernel.Bind<IProtectedData>().To<MachineKeyProtectedData>();
 
-            kernel.Bind<IDocumentStore>().ToMethod(x =>
-                {
-                    var store = new DocumentStore { ConnectionStringName = "RavenDB" };
-                    store.Initialize();
-                    IndexCreation.CreateIndexes(Assembly.GetCallingAssembly(), store);
-                    return store;
-                }).InSingletonScope();
+            kernel.Bind<Db>().ToMethod(x => new Db());
 
             kernel.Bind<Collector>().ToMethod(x =>
                 {
-                    var collector = new Collector(kernel.Get<IDocumentStore>(), kernel.Get<WidgetCollection>());
+                    var collector = new Collector(kernel.Get<Db>(), kernel.Get<WidgetCollection>());
                     return collector;
                 });
 

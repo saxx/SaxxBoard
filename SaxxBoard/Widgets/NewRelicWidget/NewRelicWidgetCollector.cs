@@ -7,14 +7,15 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Xml.Linq;
+using SaxxBoard.Models;
 
 namespace SaxxBoard.Widgets.NewRelicWidget
 {
-    public class NewRelicWidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
+    public class NewRelicWidgetCollector : WidgetCollectorBase<DataPoint>
     {
-        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
+        public override IEnumerable<DataPoint> Collect()
         {
-            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
+            var newDataPoints = new List<DataPoint>();
 
 
             var config = (NewRelicWidgetConfiguration)Widget.Configuration;
@@ -51,9 +52,9 @@ namespace SaxxBoard.Widgets.NewRelicWidget
                             foreach (var metricNodes in xml.Elements("metrics").Elements("metric").Where(x => x.Attributes().Any(y => y.Name == "agent_id" && y.Value == agent)))
                                 value += double.Parse(metricNodes.Element("field").Value, CultureInfo.InvariantCulture);
 
-                            newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                            newDataPoints.Add(new DataPoint
                             {
-                                Date = DateTime.Now,
+                                DateTime = DateTime.Now,
                                 SeriesIndex = seriesIndex,
                                 Value = value,
                                 WidgetIdentifier = Widget.InternalIdentifier

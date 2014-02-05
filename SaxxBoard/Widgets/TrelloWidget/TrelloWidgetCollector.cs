@@ -1,19 +1,19 @@
 ﻿using Elmah;
 using ePunkt.Utilities;
+using SaxxBoard.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using SaxxBoard.Widgets.Pop3Widget;
 using TrelloNet;
 
 namespace SaxxBoard.Widgets.TrelloWidget
 {
-    public class TrelloWidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
+    public class TrelloWidgetCollector : WidgetCollectorBase<DataPoint>
     {
-        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
+        public override IEnumerable<DataPoint> Collect()
         {
-            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
+            var newDataPoints = new List<DataPoint>();
             var config = (TrelloWidgetConfiguration)Widget.Configuration;
 
             for (var i = 0; i < config.Series.Count(); i++)
@@ -36,9 +36,9 @@ namespace SaxxBoard.Widgets.TrelloWidget
                         foreach (var list in trello.Lists.ForBoard(board))
                             if (seriesConfig.Lists.Any(x => x.Is(list.Name)))
                                 value += trello.Cards.ForList(list).Count();
-                        newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                        newDataPoints.Add(new DataPoint
                         {
-                            Date = DateTime.Now,
+                            DateTime = DateTime.Now,
                             SeriesIndex = i,
                             WidgetIdentifier = Widget.InternalIdentifier,
                             Value = value
@@ -46,9 +46,9 @@ namespace SaxxBoard.Widgets.TrelloWidget
                     }
                     else
                     {
-                        newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                        newDataPoints.Add(new DataPoint
                         {
-                            Date = DateTime.Now,
+                            DateTime = DateTime.Now,
                             SeriesIndex = i,
                             WidgetIdentifier = Widget.InternalIdentifier,
                             Value = trello.Cards.ForBoard(board).Count()

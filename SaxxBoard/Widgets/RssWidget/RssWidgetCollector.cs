@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
+using SaxxBoard.Models;
 
 namespace SaxxBoard.Widgets.RssWidget
 {
-    public class RssWidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
+    public class RssWidgetCollector : WidgetCollectorBase<DataPoint>
     {
-        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
+        public override IEnumerable<DataPoint> Collect()
         {
-            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
+            var newDataPoints = new List<DataPoint>();
 
             var config = (RssWidgetConfiguration)Widget.Configuration;
             for (var i = 0; i < config.Series.Count(); i++)
@@ -22,9 +23,9 @@ namespace SaxxBoard.Widgets.RssWidget
                     var xml = XDocument.Load(url);
                     var count = xml.Elements().First().Elements().First().Elements().Count() - 4;
 
-                    newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                    newDataPoints.Add(new DataPoint
                         {
-                            Date = DateTime.Now,
+                            DateTime = DateTime.Now,
                             SeriesIndex = i,
                             Value = count,
                             WidgetIdentifier = Widget.InternalIdentifier

@@ -1,17 +1,11 @@
-﻿using Raven.Client;
-using System;
+﻿using SaxxBoard.Models;
 using System.Collections.Generic;
 
 namespace SaxxBoard.Widgets
 {
     public interface IWidgetCollector
     {
-        IEnumerable<IWidgetCollectorDataPoint> Collect(IDocumentSession dbSession);
+        IEnumerable<DataPoint> Collect(Db dbSession);
         IWidget Widget { get; set; }
-    }
-
-    public interface IWidgetCollectorDataPoint
-    {
-        DateTime Date { get; set; }
     }
 }

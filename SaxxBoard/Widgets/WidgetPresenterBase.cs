@@ -1,16 +1,15 @@
 ﻿using System;
-using Raven.Client;
-using Raven.Client.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using SaxxBoard.Models;
 
 namespace SaxxBoard.Widgets
 {
     public class WidgetPresenterBase : IWidgetPresenter
     {
-        public IEnumerable<IWidgetPresenterSeries> GetData(IDocumentSession dbSession)
+        public IEnumerable<IWidgetPresenterSeries> GetData(Db dbSession)
         {
-            var availableSeriesIndexes = (from x in dbSession.Query<WidgetCollectorBaseDataPoint>()
+            var availableSeriesIndexes = (from x in dbSession.DataPoints
                                           where x.WidgetIdentifier == Widget.InternalIdentifier
                                           select x.SeriesIndex).Distinct().ToList();
 
@@ -18,9 +17,9 @@ namespace SaxxBoard.Widgets
             foreach (var seriesIndex in availableSeriesIndexes)
             {
                 var seriesIndexClosure = seriesIndex;
-                var dataPoints = (from x in dbSession.Query<WidgetCollectorBaseDataPoint>()
+                var dataPoints = (from x in dbSession.DataPoints
                                   where x.WidgetIdentifier == Widget.InternalIdentifier && x.SeriesIndex == seriesIndexClosure
-                                  orderby x.Date descending
+                                  orderby x.DateTime descending
                                   select x).Take(Widget.Configuration.MaxDataPointsInChart).ToList();
 
                 var serie = new WidgetPresenterBaseSeries
@@ -29,7 +28,7 @@ namespace SaxxBoard.Widgets
                         DataPoints = from y in dataPoints
                                      select new WidgetPresenterBaseDataPoint
                                          {
-                                             Date = y.Date,
+                                             Date = y.DateTime,
                                              RawValue = CalculateValue(y.Value)
                                          }
                     };

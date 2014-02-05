@@ -1,4 +1,4 @@
-﻿using Raven.Client;
+﻿using SaxxBoard.Models;
 using System;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ namespace SaxxBoard.Widgets
 {
     public interface IWidgetPresenter
     {
-        IEnumerable<IWidgetPresenterSeries> GetData(IDocumentSession dbSession);
+        IEnumerable<IWidgetPresenterSeries> GetData(Db dbSession);
         string FormatValue(double? rawValue);
         IWidget Widget { get; set; }
     }

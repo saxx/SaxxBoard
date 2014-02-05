@@ -7,7 +7,6 @@ namespace SaxxBoard.Widgets
     {
         int RefreshIntervalInSeconds { get; }
         int MaxDataPointsInChart { get; }
-        int MaxDataPointsToStore { get; }
 
         IEnumerable<IWidgetConfigurationSeries> Series { get; set; }
 

@@ -1,14 +1,14 @@
-﻿using Raven.Client;
+﻿using SaxxBoard.Models;
 using System;
 
 namespace SaxxBoard
 {
     public class Collector
     {
-        private readonly IDocumentStore _db;
+        private readonly Db _db;
         private readonly WidgetCollection _widgets;
 
-        public Collector(IDocumentStore db, WidgetCollection widgets)
+        public Collector(Db db, WidgetCollection widgets)
         {
             _widgets = widgets;
             _db = db;
@@ -16,27 +16,24 @@ namespace SaxxBoard
 
         public void Collect()
         {
-            using (var dbSession = _db.OpenSession())
+            foreach (var widget in _widgets.Widgets)
             {
-                foreach (var widget in _widgets.Widgets)
+                var config = widget.Configuration;
+
+                if (!widget.NextUpdate.HasValue)
+                    widget.NextUpdate = DateTime.Now;
+
+                if (widget.NextUpdate < DateTime.Now)
                 {
-                    var config = widget.Configuration;
+                    var widgetCollector = widget.GetCollector();
+                    widgetCollector.Collect(_db);
+                    widget.LastUpdate = DateTime.Now;
+                    widget.NextUpdate = DateTime.Now.AddSeconds(config.RefreshIntervalInSeconds);
+                    if (_widgets.OnCollectedCallback != null)
+                        _widgets.OnCollectedCallback.Invoke(widget, false);
 
-                    if (!widget.NextUpdate.HasValue)
-                        widget.NextUpdate = DateTime.Now;
-
-                    if (widget.NextUpdate < DateTime.Now)
-                    {
-                        var widgetCollector = widget.GetCollector();
-                        widgetCollector.Collect(dbSession);
-                        widget.LastUpdate = DateTime.Now;
-                        widget.NextUpdate = DateTime.Now.AddSeconds(config.RefreshIntervalInSeconds);
-                        if (_widgets.OnCollectedCallback != null)
-                            _widgets.OnCollectedCallback.Invoke(widget, false);
-
-                        //if we already have a collection this cycle, we wait for the next cycle to do the next collection
-                        return;
-                    }
+                    //if we already have a collection this cycle, we wait for the next cycle to do the next collection
+                    return;
                 }
             }
         }

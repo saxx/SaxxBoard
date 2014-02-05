@@ -5,14 +5,15 @@ using OpenPop.Pop3;
 using System;
 using System.Collections.Generic;
 using System.Web;
+using SaxxBoard.Models;
 
 namespace SaxxBoard.Widgets.Pop3Widget
 {
-    public class Pop3WidgetCollector : WidgetCollectorBase<WidgetCollectorBaseDataPoint>
+    public class Pop3WidgetCollector : WidgetCollectorBase<DataPoint>
     {
-        public override IEnumerable<WidgetCollectorBaseDataPoint> Collect()
+        public override IEnumerable<DataPoint> Collect()
         {
-            var newDataPoints = new List<WidgetCollectorBaseDataPoint>();
+            var newDataPoints = new List<DataPoint>();
             var config = (Pop3WidgetConfiguration)Widget.Configuration;
             
             for (var i = 0; i < config.Series.Count(); i++)
@@ -36,9 +37,9 @@ namespace SaxxBoard.Widgets.Pop3Widget
                         var messageCount = pop3Client.GetMessageCount();
                         pop3Client.Disconnect();
 
-                        newDataPoints.Add(new WidgetCollectorBaseDataPoint
+                        newDataPoints.Add(new DataPoint
                         {
-                            Date = DateTime.Now,
+                            DateTime = DateTime.Now,
                             SeriesIndex = i,
                             Value = messageCount,
                             WidgetIdentifier = Widget.InternalIdentifier

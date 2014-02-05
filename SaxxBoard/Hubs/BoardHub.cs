@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
-using Raven.Client;
+using SaxxBoard.Models;
 using SaxxBoard.Widgets;
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ namespace SaxxBoard.Hubs
     public class BoardHub : Hub
     {
         private readonly WidgetCollection _widgets;
-        private readonly IDocumentStore _db;
+        private readonly Db _db;
 
-        public BoardHub(WidgetCollection widgets, IDocumentStore db)
+        public BoardHub(WidgetCollection widgets, Db db)
         {
             _db = db;
             _widgets = widgets;
@@ -39,21 +39,18 @@ namespace SaxxBoard.Hubs
                     maxValueOnChart = config.ChartConfiguration.MaxValue
                 };
 
-            using (var dbSession = _db.OpenSession())
-            {
-                var series = widget.GetPresenter().GetData(dbSession).ToList();
-                jsonWidget.series = (from x in series
-                                     select new JsonSeries
-                                         {
-                                             label = x.Label,
-                                             dataPoints = (from y in x.DataPoints
-                                                           select new JsonDataPoint
-                                                               {
-                                                                   date = y.Date,
-                                                                   rawValue = y.RawValue
-                                                               }).ToList()
-                                         }).ToList();
-            }
+            var series = widget.GetPresenter().GetData(_db).ToList();
+            jsonWidget.series = (from x in series
+                                 select new JsonSeries
+                                     {
+                                         label = x.Label,
+                                         dataPoints = (from y in x.DataPoints
+                                                       select new JsonDataPoint
+                                                           {
+                                                               date = y.Date,
+                                                               rawValue = y.RawValue
+                                                           }).ToList()
+                                     }).ToList();
 
             jsonWidget.hasError = jsonWidget.series.Any(x => x.dataPoints.Any() && x.dataPoints.Last().rawValue == null);
 
@@ -68,8 +65,8 @@ namespace SaxxBoard.Hubs
                 jsonWidget.lastValue = widget.GetPresenter().FormatValue(average);
             }
 
-            foreach (var series in jsonWidget.series)
-                series.dataPoints = FillMissingDataPointsWithNull(config.RefreshIntervalInSeconds, series.dataPoints.ToList()).ToList();
+            foreach (var s in jsonWidget.series)
+                s.dataPoints = FillMissingDataPointsWithNull(config.RefreshIntervalInSeconds, s.dataPoints.ToList()).ToList();
 
             Clients.All.updateBoard(jsonWidget);
         }

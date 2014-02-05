@@ -11,17 +11,12 @@ namespace SaxxBoard.Widgets
             if (widgetConfiguration.refreshIntervalInSeconds != null)
                 RefreshIntervalInSeconds = widgetConfiguration.refreshIntervalInSeconds;
             else
-                RefreshIntervalInSeconds = 60 * 15;
+                RefreshIntervalInSeconds = 60 * 5;
 
             if (widgetConfiguration.maxDataPointsInChart != null)
                 MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart;
             else
-                MaxDataPointsInChart = 500;
-
-            if (widgetConfiguration.maxDataPointsInStore != null)
-                MaxDataPointsToStore = widgetConfiguration.maxDataPointsInStore;
-            else
-                MaxDataPointsToStore = 500;
+                MaxDataPointsInChart = 1000;
 
             var series = new List<IWidgetConfigurationSeries>();
             foreach (var s in widgetConfiguration.series)
@@ -37,7 +32,6 @@ namespace SaxxBoard.Widgets
 
         public int RefreshIntervalInSeconds { get; private set; }
         public int MaxDataPointsInChart { get; private set; }
-        public int MaxDataPointsToStore { get; private set; }
 
         public IEnumerable<IWidgetConfigurationSeries> Series
         {
