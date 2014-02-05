@@ -284,7 +284,6 @@
     </Content>
     <None Include="Properties\PublishProfiles\SaxxBoard - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\SaxxBoard - Web Deploy.pubxml" />
-    <None Include="Scripts\jquery-2.0.3.intellisense.js" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.0.js" />
     <Content Include="Scripts\jquery-2.1.0.min.js" />
