@@ -10,7 +10,7 @@ namespace SaxxBoard.Widgets
         public WidgetConfigurationBase(dynamic widgetConfiguration)
         {
             RefreshIntervalInSeconds = widgetConfiguration.refreshIntervalInSeconds ?? 60 * 5;
-            MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart ?? 1000;
+            MaxDataPointsInChart = widgetConfiguration.maxDataPointsInChart ?? 3000;
 
             var series = new List<IWidgetConfigurationSeries>();
             foreach (var s in widgetConfiguration.series)
