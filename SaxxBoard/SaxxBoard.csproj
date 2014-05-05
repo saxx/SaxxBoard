@@ -281,8 +281,8 @@
     <Content Include="newrelic\extensions\extension.xsd">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Properties\PublishProfiles\saxxboard - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\saxxboard - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\epunkt-saxxboard - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\epunkt-saxxboard - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.1.0-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.0.js" />
     <Content Include="Scripts\jquery-2.1.0.min.js" />
